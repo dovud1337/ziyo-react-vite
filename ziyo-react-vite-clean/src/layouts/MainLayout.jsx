@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { sidebarGroups } from '../data/navigation.js';
 import { useApp } from '../context/AppContext.jsx';
+import ThemeToggle from '../components/ThemeToggle.jsx';
 
 function Header() {
   const [query, setQuery] = useState('');
@@ -29,6 +30,7 @@ function Header() {
           onChange={(event) => setQuery(event.target.value)}
         />
       </form>
+      <ThemeToggle />
       {user ? (
         <NavLink to="/student/profile" className="avatar">
           {user.name[0].toUpperCase()}

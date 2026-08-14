@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
+import ThemeToggle from '../components/ThemeToggle.jsx';
 import { useApp } from '../context/AppContext.jsx';
 
 export default function AuthPage({ mode }) {
@@ -43,6 +44,7 @@ export default function AuthPage({ mode }) {
 
   return (
     <div className="auth-page">
+      <div className="auth-page__theme"><ThemeToggle /></div>
       <form className="auth-card panel" onSubmit={handleSubmit}>
         <Link to="/" className="logo">ZIYO</Link>
         <h1>{content[0]}</h1>
