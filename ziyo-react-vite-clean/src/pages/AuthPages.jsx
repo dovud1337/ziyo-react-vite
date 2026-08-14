@@ -1,22 +1,55 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
+import { useApp } from '../context/AppContext.jsx';
 
 export default function AuthPage({ mode }) {
+  const navigate = useNavigate();
+  const { login, register } = useApp();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [sent, setSent] = useState(false);
+
   const content = {
     login: ['Войти', 'Нет аккаунта?', '/register', 'Зарегистрироваться'],
     register: ['Создать аккаунт', 'Уже есть аккаунт?', '/login', 'Войти'],
     forgot: ['Восстановить пароль', 'Вспомнили пароль?', '/login', 'Войти'],
   }[mode];
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (mode === 'login') {
+      login(email);
+      navigate('/student');
+    } else if (mode === 'register') {
+      register(name, email);
+      navigate('/student');
+    } else {
+      setSent(true);
+    }
+  };
+
   return (
     <div className="auth-page">
-      <form className="auth-card panel">
-        <a href="/" className="logo">ZIYO</a>
+      <form className="auth-card panel" onSubmit={handleSubmit}>
+        <Link to="/" className="logo">ZIYO</Link>
         <h1>{content[0]}</h1>
-        {mode === 'register' && <label>Имя<input /></label>}
-        <label>Email<input type="email" /></label>
-        {mode !== 'forgot' && <label>Пароль<input type="password" /></label>}
-        <Button type="submit">Продолжить</Button>
-        <p>{content[1]} <a href={content[2]}>{content[3]}</a></p>
+        {mode === 'forgot' && sent ? (
+          <p>Инструкции по восстановлению пароля отправлены на {email}.</p>
+        ) : (
+          <>
+            {mode === 'register' && (
+              <label>Имя<input required value={name} onChange={(event) => setName(event.target.value)} /></label>
+            )}
+            <label>Email<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+            {mode !== 'forgot' && (
+              <label>Пароль<input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+            )}
+            <Button type="submit">Продолжить</Button>
+          </>
+        )}
+        <p>{content[1]} <Link to={content[2]}>{content[3]}</Link></p>
       </form>
     </div>
   );

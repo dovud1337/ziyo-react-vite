@@ -1,7 +1,18 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { sidebarGroups } from '../data/navigation.js';
+import { useApp } from '../context/AppContext.jsx';
 
 function Header() {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+  const { user } = useApp();
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    navigate(query.trim() ? `/catalog?q=${encodeURIComponent(query.trim())}` : '/catalog');
+  };
+
   return (
     <header className="header">
       <NavLink to="/" className="logo">ZIYO</NavLink>
@@ -11,15 +22,36 @@ function Header() {
         <NavLink to="/business">Для бизнеса</NavLink>
         <NavLink to="/teach">Преподавать</NavLink>
       </nav>
-      <div className="header__search">
-        <input placeholder="Поиск курсов и навыков" />
-      </div>
-      <NavLink to="/student/profile" className="avatar">Д</NavLink>
+      <form className="header__search" onSubmit={handleSearch}>
+        <input
+          placeholder="Поиск курсов и навыков"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+      </form>
+      {user ? (
+        <NavLink to="/student/profile" className="avatar">
+          {user.name[0].toUpperCase()}
+        </NavLink>
+      ) : (
+        <div className="header__auth">
+          <Link to="/login" className="button button--secondary">Войти</Link>
+          <Link to="/register" className="button button--primary">Регистрация</Link>
+        </div>
+      )}
     </header>
   );
 }
 
 function Sidebar() {
+  const navigate = useNavigate();
+  const { user, logout } = useApp();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <aside className="sidebar">
       {sidebarGroups.map((group) => (
@@ -39,6 +71,11 @@ function Sidebar() {
       <div className="sidebar__group">
         <span>Управление</span>
         <NavLink to="/admin">Админ-панель</NavLink>
+        {user ? (
+          <button type="button" className="sidebar__logout" onClick={handleLogout}>Выйти</button>
+        ) : (
+          <NavLink to="/login">Войти</NavLink>
+        )}
       </div>
     </aside>
   );
