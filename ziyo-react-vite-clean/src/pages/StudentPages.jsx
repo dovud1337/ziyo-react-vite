@@ -111,11 +111,11 @@ export function CertificatesPage() {
 
 export function LessonPage() {
   const { courseId, lessonId } = useParams();
-  const { courses, enrollments, toggleLessonComplete } = useApp();
+  const { courses, enrollments, toggleLessonComplete, coursesLoaded } = useApp();
   const course = courses.find((item) => item.id === Number(courseId));
   const enrollment = enrollments[Number(courseId)];
 
-  if (!course) return <Navigate to="/student/courses" replace />;
+  if (!course) return coursesLoaded ? <Navigate to="/student/courses" replace /> : null;
 
   const lessons = getLessons(course);
   const activeId = Number(lessonId);

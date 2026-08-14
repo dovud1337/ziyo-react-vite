@@ -55,15 +55,17 @@ export function CartPage() {
 }
 
 export function CheckoutPage() {
-  const { courses, cartIds, enrollCartItems } = useApp();
+  const { courses, cartIds, enrollCartItems, userDataLoaded } = useApp();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', card: '', expiry: '' });
   const [couponInput, setCouponInput] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   if (cartIds.length === 0) {
-    return <Navigate to="/cart" replace />;
+    return userDataLoaded ? <Navigate to="/cart" replace /> : null;
   }
 
   const items = courses.filter((course) => cartIds.includes(course.id));
@@ -86,10 +88,18 @@ export function CheckoutPage() {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const enrolled = enrollCartItems();
-    navigate('/payment-success', { state: { titles: enrolled.map((course) => course.title) } });
+    setSubmitError('');
+    setSubmitting(true);
+    try {
+      const enrolled = await enrollCartItems();
+      navigate('/payment-success', { state: { titles: enrolled.map((course) => course.title) } });
+    } catch (err) {
+      setSubmitError(err.message ?? 'Не удалось оформить заказ. Попробуйте ещё раз.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -122,7 +132,8 @@ export function CheckoutPage() {
         <label>Имя на карте<input required value={form.name} onChange={handleChange('name')} placeholder="Довуд Каримов" /></label>
         <label>Номер карты<input required value={form.card} onChange={handleChange('card')} placeholder="0000 0000 0000 0000" /></label>
         <label>Срок действия<input required value={form.expiry} onChange={handleChange('expiry')} placeholder="ММ/ГГ" /></label>
-        <Button type="submit">Оплатить {total} TJS</Button>
+        {submitError && <p style={{ color: '#c0392b' }}>{submitError}</p>}
+        <Button type="submit" disabled={submitting}>{submitting ? 'Оплата…' : `Оплатить ${total} TJS`}</Button>
       </form>
     </>
   );

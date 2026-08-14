@@ -69,6 +69,7 @@ export function CreateCoursePage() {
   const [description, setDescription] = useState('');
   const [sections, setSections] = useState([emptySection()]);
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const updateSection = (sectionId, patch) => {
     setSections((prev) => prev.map((section) => (section.id === sectionId ? { ...section, ...patch } : section)));
@@ -92,7 +93,7 @@ export function CreateCoursePage() {
     section.id === sectionId ? { ...section, lessons: section.lessons.filter((lesson) => lesson.id !== lessonId) } : section
   )));
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
     if (!title.trim()) { setError('Укажите название курса.'); return; }
@@ -107,16 +108,23 @@ export function CreateCoursePage() {
       setError('Добавьте хотя бы один раздел с уроком (укажите названия).');
       return;
     }
-    addCourse({
-      title: title.trim(),
-      category,
-      level,
-      price: Number(price),
-      discountPrice: discountPrice ? Number(discountPrice) : null,
-      description: description.trim(),
-      sections: cleanSections,
-    });
-    navigate('/instructor/courses');
+    setSubmitting(true);
+    try {
+      await addCourse({
+        title: title.trim(),
+        category,
+        level,
+        price: Number(price),
+        discountPrice: discountPrice ? Number(discountPrice) : null,
+        description: description.trim(),
+        sections: cleanSections,
+      });
+      navigate('/instructor/courses');
+    } catch (err) {
+      setError(err.message ?? 'Не удалось сохранить курс. Попробуйте ещё раз.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -179,7 +187,7 @@ export function CreateCoursePage() {
           <Button type="button" variant="secondary" onClick={addSection}>+ Добавить раздел</Button>
         </div>
 
-        <Button type="submit">Сохранить курс</Button>
+        <Button type="submit" disabled={submitting}>{submitting ? 'Сохраняем…' : 'Сохранить курс'}</Button>
       </form>
     </>
   );

@@ -11,10 +11,10 @@ function ReviewForm({ courseId }) {
   const [rating, setRating] = useState(5);
   const [text, setText] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!text.trim()) return;
-    addReview(courseId, { rating, text: text.trim() });
+    await addReview(courseId, { rating, text: text.trim() });
     setText('');
   };
 
@@ -32,18 +32,18 @@ function QnaThread({ course }) {
   const [question, setQuestion] = useState('');
   const [replyDrafts, setReplyDrafts] = useState({});
 
-  const handleAsk = (event) => {
+  const handleAsk = async (event) => {
     event.preventDefault();
     if (!question.trim()) return;
-    addQuestion(course.id, question.trim());
+    await addQuestion(course.id, question.trim());
     setQuestion('');
   };
 
-  const handleReply = (questionId) => (event) => {
+  const handleReply = (questionId) => async (event) => {
     event.preventDefault();
     const text = (replyDrafts[questionId] ?? '').trim();
     if (!text) return;
-    addReply(course.id, questionId, text);
+    await addReply(course.id, questionId, text);
     setReplyDrafts((prev) => ({ ...prev, [questionId]: '' }));
   };
 
@@ -86,10 +86,10 @@ function QnaThread({ course }) {
 export default function CoursePage() {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const { courses, cartIds, enrollments, addToCart, user } = useApp();
+  const { courses, cartIds, enrollments, addToCart, user, coursesLoaded } = useApp();
   const course = courses.find((item) => item.id === Number(courseId));
 
-  if (!course) return <Navigate to="/catalog" replace />;
+  if (!course) return coursesLoaded ? <Navigate to="/catalog" replace /> : null;
 
   const isEnrolled = Boolean(enrollments[course.id]);
   const isInCart = cartIds.includes(course.id);

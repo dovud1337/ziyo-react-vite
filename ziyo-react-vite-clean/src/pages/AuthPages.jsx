@@ -10,6 +10,8 @@ export default function AuthPage({ mode }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   const content = {
     login: ['Войти', 'Нет аккаунта?', '/register', 'Зарегистрироваться'],
@@ -17,16 +19,25 @@ export default function AuthPage({ mode }) {
     forgot: ['Восстановить пароль', 'Вспомнили пароль?', '/login', 'Войти'],
   }[mode];
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (mode === 'login') {
-      login(email);
-      navigate('/student');
-    } else if (mode === 'register') {
-      register(name, email);
-      navigate('/student');
-    } else {
+    setError('');
+    if (mode === 'forgot') {
       setSent(true);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      if (mode === 'login') {
+        await login(email, password);
+      } else {
+        await register(name, email, password);
+      }
+      navigate('/student');
+    } catch (err) {
+      setError(err.message ?? 'Что-то пошло не так. Попробуйте ещё раз.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -46,7 +57,8 @@ export default function AuthPage({ mode }) {
             {mode !== 'forgot' && (
               <label>Пароль<input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
             )}
-            <Button type="submit">Продолжить</Button>
+            {error && <p style={{ color: '#c0392b' }}>{error}</p>}
+            <Button type="submit" disabled={submitting}>{submitting ? 'Подождите…' : 'Продолжить'}</Button>
           </>
         )}
         <p>{content[1]} <Link to={content[2]}>{content[3]}</Link></p>
