@@ -1,6 +1,6 @@
 export function getLessons(course) {
   return (course.sections ?? []).flatMap((section) => (
-    section.lessons.map((lesson) => ({ ...lesson, sectionTitle: section.title }))
+    (section.lessons ?? []).map((lesson) => ({ ...lesson, sectionTitle: section.title }))
   ));
 }
 

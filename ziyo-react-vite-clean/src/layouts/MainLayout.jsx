@@ -37,7 +37,7 @@ function Header() {
       <ThemeToggle />
       {user ? (
         <NavLink to="/student/profile" className="avatar">
-          {user.name[0].toUpperCase()}
+          {user.name?.[0]?.toUpperCase() ?? '?'}
         </NavLink>
       ) : (
         <div className="header__auth">
