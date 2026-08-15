@@ -36,6 +36,7 @@ export const translations = {
       lessonsWord: 'уроков', noReviews: 'Нет отзывов', reviewsSuffix: 'отзывов',
       createCourse: 'Создать курс', goToCatalog: 'Перейти в каталог', print: 'Печать',
       loading: 'Загрузка…', loadErrorTitle: 'Не удалось загрузить курсы', retry: 'Повторить',
+      siteDescription: 'ZIYO — онлайн-обучение для Центральной Азии и СНГ',
     },
     nav: {
       catalog: 'Каталог', instructors: 'Преподаватели', business: 'Для бизнеса', teach: 'Преподавать',
@@ -212,6 +213,7 @@ export const translations = {
       lessonsWord: 'дарс', noReviews: 'Тақриз нест', reviewsSuffix: 'тақриз',
       createCourse: 'Курс сохтан', goToCatalog: 'Ба каталог гузаштан', print: 'Чоп',
       loading: 'Бор карда истодааст…', loadErrorTitle: 'Курсҳо бор нашуданд', retry: 'Такрор кардан',
+      siteDescription: 'ZIYO — таълими онлайн барои Осиёи Марказӣ ва ИДМ',
     },
     nav: {
       catalog: 'Каталог', instructors: 'Омӯзгорон', business: 'Барои бизнес', teach: 'Дарс додан',
@@ -388,6 +390,7 @@ export const translations = {
       lessonsWord: 'lessons', noReviews: 'No reviews', reviewsSuffix: 'reviews',
       createCourse: 'Create a course', goToCatalog: 'Go to catalog', print: 'Print',
       loading: 'Loading…', loadErrorTitle: 'Could not load courses', retry: 'Retry',
+      siteDescription: 'ZIYO — online learning for Central Asia and the CIS',
     },
     nav: {
       catalog: 'Catalog', instructors: 'Instructors', business: 'For business', teach: 'Teach',

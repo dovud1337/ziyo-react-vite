@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
+import SeoHead from '../components/SeoHead.jsx';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
 
@@ -47,6 +48,7 @@ export default function AuthPage({ mode }) {
 
   return (
     <div className="auth-page">
+      <SeoHead title={content[0]} />
       <div className="auth-page__theme"><LanguageSwitcher /><ThemeToggle /></div>
       <form className="auth-card panel" onSubmit={handleSubmit}>
         <Link to="/" className="logo">ZIYO</Link>

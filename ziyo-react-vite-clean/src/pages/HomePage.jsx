@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
+import SeoHead from '../components/SeoHead.jsx';
 import { categories } from '../data/courses.js';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
@@ -15,6 +16,7 @@ export default function HomePage() {
 
   return (
     <>
+      <SeoHead />
       <section className="compact-hero">
         <div>
           <span className="eyebrow">{t('home.badge')}</span>

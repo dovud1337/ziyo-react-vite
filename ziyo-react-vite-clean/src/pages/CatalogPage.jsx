@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import PageHeader from '../components/PageHeader.jsx';
+import SeoHead from '../components/SeoHead.jsx';
 import { categories, levels } from '../data/courses.js';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
@@ -69,6 +70,7 @@ export default function CatalogPage() {
 
   return (
     <>
+      <SeoHead title={t('catalog.title')} description={t('catalog.description')} />
       <PageHeader
         eyebrow={query ? t('catalog.resultsFor', { query }) : t('catalog.coursesCount', { count: filteredCourses.length })}
         title={t('catalog.title')}

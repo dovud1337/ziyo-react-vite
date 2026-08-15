@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import Button from '../components/Button.jsx';
+import SeoHead from '../components/SeoHead.jsx';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
 
@@ -20,6 +21,7 @@ export function InstructorsPage() {
 
   return (
     <>
+      <SeoHead title={t('publicPages.instructorsTitle')} description={t('publicPages.instructorsDescription')} />
       <PageHeader eyebrow={t('publicPages.expertsEyebrow')} title={t('publicPages.instructorsTitle')} description={t('publicPages.instructorsDescription')} />
       {instructors.length === 0 ? (
         <div className="panel empty-state">
@@ -64,6 +66,7 @@ export function InstructorProfilePage() {
 
   return (
     <>
+      <SeoHead title={anchorCourse.teacher} description={t('publicPages.coursesOnPlatform', { count: teacherCourses.length })} />
       <section className="profile-hero panel">
         <div className={`person-card__avatar preview--${anchorCourse.tone}`}>{anchorCourse.teacher[0]}</div>
         <div><span className="eyebrow">{t('publicPages.instructorEyebrow')}</span><h1>{anchorCourse.teacher}</h1><p>{t('publicPages.coursesOnPlatform', { count: teacherCourses.length })}</p></div>
@@ -83,6 +86,7 @@ export function MarketingPage({ title, description, cta, ctaTo = '/register' }) 
   ];
   return (
     <>
+      <SeoHead title={title} description={description} />
       <section className="marketing-hero panel"><span className="eyebrow">{t('publicPages.ziyoEyebrow')}</span><h1>{title}</h1><p>{description}</p><Button onClick={() => navigate(ctaTo)}>{cta ?? t('publicPages.defaultCta')}</Button></section>
       <section className="section"><div className="feature-grid">{features.map((item) => <div className="panel" key={item}><h3>{item}</h3><p>{t('publicPages.featureCardDescription')}</p></div>)}</div></section>
     </>
@@ -94,6 +98,7 @@ export function BlogPage() {
   const { t } = useLanguage();
   return (
     <>
+      <SeoHead title={t('publicPages.blogTitle')} description={t('publicPages.blogDescription')} />
       <PageHeader eyebrow={t('publicPages.materialsEyebrow')} title={t('publicPages.blogTitle')} description={t('publicPages.blogDescription')} />
       {courses.length === 0 ? (
         <div className="panel empty-state">

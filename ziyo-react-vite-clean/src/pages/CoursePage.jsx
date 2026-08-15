@@ -3,6 +3,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import CourseGrid from '../components/CourseGrid.jsx';
 import StarRating from '../components/StarRating.jsx';
+import SeoHead from '../components/SeoHead.jsx';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
 import { getAverageRating, getEffectivePrice, getLessonCount, getLessons, getReviewCount, hasDiscount, isCourseDetailLoaded } from '../utils/courseHelpers.js';
@@ -119,6 +120,7 @@ export default function CoursePage() {
 
   return (
     <>
+      <SeoHead title={course.title} description={course.description} />
       <section className="course-hero">
         <div>
           <span className="eyebrow">{translateCategory(course.category)} · {translateLevel(course.level)}</span>
