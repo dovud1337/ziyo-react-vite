@@ -180,6 +180,40 @@ create policy "authenticated users can reply" on qna_replies
   for insert with check (auth.uid() = author_id);
 
 -- ---------------------------------------------------------------------------
+-- course_cards: lightweight aggregate view for list pages (catalog, home,
+-- admin, instructor dashboard). Avoids pulling full sections/lessons/reviews
+-- text just to render a card. Full curriculum + reviews + Q&A are fetched
+-- separately, by id, only on the course detail page.
+-- ---------------------------------------------------------------------------
+create or replace view course_cards as
+select
+  c.id,
+  c.teacher_id,
+  c.teacher_name,
+  c.title,
+  c.category,
+  c.level,
+  c.price,
+  c.discount_price,
+  c.tone,
+  c.created_at,
+  coalesce(l.lesson_count, 0) as lesson_count,
+  coalesce(r.review_count, 0) as review_count,
+  r.avg_rating
+from courses c
+left join (
+  select s.course_id, count(le.id) as lesson_count
+  from sections s
+  join lessons le on le.section_id = s.id
+  group by s.course_id
+) l on l.course_id = c.id
+left join (
+  select course_id, count(*) as review_count, round(avg(rating)::numeric, 1) as avg_rating
+  from reviews
+  group by course_id
+) r on r.course_id = c.id;
+
+-- ---------------------------------------------------------------------------
 -- per-user state: cart, enrollments, completed lessons, wishlist, subscriptions
 -- ---------------------------------------------------------------------------
 create table if not exists cart_items (

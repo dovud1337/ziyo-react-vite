@@ -10,28 +10,31 @@ import { CartPage, CheckoutPage, PaymentSuccessPage } from './pages/CommercePage
 import { AdminDashboardPage, AdminListPage } from './pages/AdminPages.jsx';
 import AuthPage from './pages/AuthPages.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
-
-const studentSimplePages = [
-  ['calendar', 'Календарь', 'Расписание занятий и дедлайнов.'],
-  ['messages', 'Сообщения', 'Чаты с преподавателями и студентами.'],
-  ['notifications', 'Уведомления', 'Все важные обновления платформы.'],
-  ['community', 'Сообщество', 'Обсуждения, вопросы и ответы.'],
-  ['profile', 'Профиль', 'Личная информация и достижения.'],
-  ['settings', 'Настройки', 'Язык, безопасность и уведомления.'],
-  ['quiz', 'Тест', 'Проверка знаний после урока.'],
-  ['assignment', 'Задание', 'Практическая работа и обратная связь.'],
-];
-
-const instructorSimplePages = [
-  ['curriculum', 'Программа курса', 'Модули, уроки и порядок обучения.'],
-  ['upload', 'Загрузка урока', 'Добавьте видео, материалы и задания.'],
-  ['analytics', 'Аналитика', 'Просмотры, завершения и активность студентов.'],
-  ['students', 'Студенты', 'Список студентов и их прогресс.'],
-  ['earnings', 'Доходы', 'Продажи, выплаты и финансовые отчёты.'],
-  ['reviews', 'Отзывы', 'Оценки и обратная связь по курсам.'],
-];
+import { useLanguage } from './context/LanguageContext.jsx';
 
 export default function App() {
+  const { t } = useLanguage();
+
+  const studentSimplePages = [
+    ['calendar', t('pages.studentCalendarTitle'), t('pages.studentCalendarDescription')],
+    ['messages', t('pages.studentMessagesTitle'), t('pages.studentMessagesDescription')],
+    ['notifications', t('pages.studentNotificationsTitle'), t('pages.studentNotificationsDescription')],
+    ['community', t('pages.studentCommunityTitle'), t('pages.studentCommunityDescription')],
+    ['profile', t('pages.studentProfileTitle'), t('pages.studentProfileDescription')],
+    ['settings', t('pages.studentSettingsTitle'), t('pages.studentSettingsDescription')],
+    ['quiz', t('pages.studentQuizTitle'), t('pages.studentQuizDescription')],
+    ['assignment', t('pages.studentAssignmentTitle'), t('pages.studentAssignmentDescription')],
+  ];
+
+  const instructorSimplePages = [
+    ['curriculum', t('pages.instructorCurriculumTitle'), t('pages.instructorCurriculumDescription')],
+    ['upload', t('pages.instructorUploadTitle'), t('pages.instructorUploadDescription')],
+    ['analytics', t('pages.instructorAnalyticsTitle'), t('pages.instructorAnalyticsDescription')],
+    ['students', t('pages.instructorStudentsTitle'), t('pages.instructorStudentsDescription')],
+    ['earnings', t('pages.instructorEarningsTitle'), t('pages.instructorEarningsDescription')],
+    ['reviews', t('pages.instructorReviewsTitle'), t('pages.instructorReviewsDescription')],
+  ];
+
   return (
     <Routes>
       <Route element={<MainLayout />}>
@@ -42,13 +45,13 @@ export default function App() {
         <Route path="/courses/:courseId" element={<CoursePage />} />
         <Route path="/instructors" element={<InstructorsPage />} />
         <Route path="/instructors/:instructorId" element={<InstructorProfilePage />} />
-        <Route path="/about" element={<MarketingPage title="О платформе" description="Онлайн-обучение для Центральной Азии и СНГ." ctaTo="/register" />} />
-        <Route path="/business" element={<MarketingPage title="ZIYO для бизнеса" description="Обучайте команды и отслеживайте прогресс." cta="Запросить демо" ctaTo="/contact" />} />
-        <Route path="/teach" element={<MarketingPage title="Станьте преподавателем" description="Создавайте курсы и зарабатывайте на знаниях." cta="Создать курс" ctaTo="/instructor/create" />} />
-        <Route path="/faq" element={<MarketingPage title="Частые вопросы" description="Ответы о курсах, оплате и сертификатах." ctaTo="/register" />} />
-        <Route path="/contact" element={<MarketingPage title="Свяжитесь с нами" description="Поддержка студентов и преподавателей." ctaTo="/register" />} />
+        <Route path="/about" element={<MarketingPage title={t('pages.aboutTitle')} description={t('pages.aboutDescription')} ctaTo="/register" />} />
+        <Route path="/business" element={<MarketingPage title={t('pages.businessTitle')} description={t('pages.businessDescription')} cta={t('pages.businessCta')} ctaTo="/contact" />} />
+        <Route path="/teach" element={<MarketingPage title={t('pages.teachTitle')} description={t('pages.teachDescription')} cta={t('pages.teachCta')} ctaTo="/instructor/create" />} />
+        <Route path="/faq" element={<MarketingPage title={t('pages.faqTitle')} description={t('pages.faqDescription')} ctaTo="/register" />} />
+        <Route path="/contact" element={<MarketingPage title={t('pages.contactTitle')} description={t('pages.contactDescription')} ctaTo="/register" />} />
         <Route path="/blog" element={<BlogPage />} />
-        <Route path="/blog/:articleId" element={<MarketingPage title="Статья ZIYO" description="Полезные материалы об обучении и карьере." ctaTo="/catalog" />} />
+        <Route path="/blog/:articleId" element={<MarketingPage title={t('pages.blogArticleTitle')} description={t('pages.blogArticleDescription')} ctaTo="/catalog" />} />
 
         <Route path="/student" element={<StudentDashboardPage />} />
         <Route path="/student/courses" element={<MyCoursesPage />} />
@@ -71,11 +74,11 @@ export default function App() {
         ))}
 
         <Route path="/admin" element={<AdminDashboardPage />} />
-        <Route path="/admin/users" element={<AdminListPage title="Пользователи" columns={['Имя', 'Email', 'Страна', 'Статус']} />} />
-        <Route path="/admin/courses" element={<AdminListPage title="Курсы" columns={['Курс', 'Автор', 'Студенты', 'Статус']} />} />
-        <Route path="/admin/instructors" element={<AdminListPage title="Преподаватели" columns={['Имя', 'Курсы', 'Рейтинг', 'Статус']} />} />
-        <Route path="/admin/orders" element={<AdminListPage title="Заказы" columns={['Заказ', 'Покупатель', 'Сумма', 'Статус']} />} />
-        <Route path="/admin/reports" element={<AdminListPage title="Отчёты" columns={['Отчёт', 'Период', 'Формат', 'Статус']} />} />
+        <Route path="/admin/users" element={<AdminListPage title={t('pages.adminUsersTitle')} columns={t('pages.adminUsersColumns')} />} />
+        <Route path="/admin/courses" element={<AdminListPage title={t('pages.adminCoursesTitle')} columns={t('pages.adminCoursesColumns')} />} />
+        <Route path="/admin/instructors" element={<AdminListPage title={t('pages.adminInstructorsTitle')} columns={t('pages.adminInstructorsColumns')} />} />
+        <Route path="/admin/orders" element={<AdminListPage title={t('pages.adminOrdersTitle')} columns={t('pages.adminOrdersColumns')} />} />
+        <Route path="/admin/reports" element={<AdminListPage title={t('pages.adminReportsTitle')} columns={t('pages.adminReportsColumns')} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 

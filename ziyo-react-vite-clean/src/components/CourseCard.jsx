@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
-import { useApp } from '../context/AppContext.jsx';
+import { useApp } from '../store/appStore.js';
+import { useLanguage } from '../context/LanguageContext.jsx';
 import StarRating from './StarRating.jsx';
 import { getAverageRating, getEffectivePrice, getLessonCount, getReviewCount, hasDiscount } from '../utils/courseHelpers.js';
 
 export default function CourseCard({ course, showProgress = false, progress = 0 }) {
-  const { wishlistIds, toggleWishlist } = useApp();
+  const { wishlistIds, toggleWishlist } = useApp((state) => ({
+    wishlistIds: state.wishlistIds,
+    toggleWishlist: state.toggleWishlist,
+  }));
+  const { t, translateLevel } = useLanguage();
   const saved = wishlistIds.includes(course.id);
   const rating = getAverageRating(course);
   const reviewCount = getReviewCount(course);
@@ -18,13 +23,13 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
   return (
     <Link to={`/courses/${course.id}`} className="course-card">
       <div className={`course-card__preview preview--${course.tone}`}>
-        <span className="course-card__badge">{getLessonCount(course)} уроков</span>
-        <span className="course-card__duration">{course.level}</span>
+        <span className="course-card__badge">{getLessonCount(course)} {t('common.lessonsWord')}</span>
+        <span className="course-card__duration">{translateLevel(course.level)}</span>
         <button
           type="button"
           className={`course-card__wishlist${saved ? ' active' : ''}`}
           onClick={handleWishlistClick}
-          aria-label={saved ? 'Убрать из избранного' : 'Добавить в избранное'}
+          aria-label={saved ? t('courseCard.removeFromWishlist') : t('courseCard.addToWishlist')}
         >
           {saved ? '♥' : '♡'}
         </button>
@@ -36,7 +41,7 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
           {rating != null ? (
             <span><StarRating value={rating} /> {rating} ({reviewCount})</span>
           ) : (
-            <span>Нет отзывов</span>
+            <span>{t('common.noReviews')}</span>
           )}
         </div>
         {showProgress ? (

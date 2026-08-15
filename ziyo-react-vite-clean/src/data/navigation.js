@@ -1,28 +1,28 @@
 export const sidebarGroups = [
   {
-    title: 'Обучение',
+    titleKey: 'sidebar.learning',
     items: [
-      ['/', 'Главная'],
-      ['/catalog', 'Каталог'],
-      ['/student/courses', 'Мои курсы'],
-      ['/student/wishlist', 'Избранное'],
-      ['/student/calendar', 'Календарь'],
+      ['/', 'sidebar.home'],
+      ['/catalog', 'sidebar.catalog'],
+      ['/student/courses', 'sidebar.myCourses'],
+      ['/student/wishlist', 'sidebar.wishlist'],
+      ['/student/calendar', 'sidebar.calendar'],
     ],
   },
   {
-    title: 'Общение',
+    titleKey: 'sidebar.communication',
     items: [
-      ['/student/messages', 'Сообщения'],
-      ['/student/notifications', 'Уведомления'],
-      ['/student/community', 'Сообщество'],
+      ['/student/messages', 'sidebar.messages'],
+      ['/student/notifications', 'sidebar.notifications'],
+      ['/student/community', 'sidebar.community'],
     ],
   },
   {
-    title: 'Аккаунт',
+    titleKey: 'sidebar.account',
     items: [
-      ['/student/certificates', 'Сертификаты'],
-      ['/student/profile', 'Профиль'],
-      ['/student/settings', 'Настройки'],
+      ['/student/certificates', 'sidebar.certificates'],
+      ['/student/profile', 'sidebar.profile'],
+      ['/student/settings', 'sidebar.settings'],
     ],
   },
 ];

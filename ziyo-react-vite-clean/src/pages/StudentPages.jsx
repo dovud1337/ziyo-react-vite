@@ -1,23 +1,29 @@
+import { useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import StatCard from '../components/StatCard.jsx';
 import Button from '../components/Button.jsx';
-import { useApp } from '../context/AppContext.jsx';
-import { getCourseProgress, getLessons } from '../utils/courseHelpers.js';
+import { useApp } from '../store/appStore.js';
+import { useLanguage } from '../context/LanguageContext.jsx';
+import { getCourseProgress, getLessons, isCourseDetailLoaded } from '../utils/courseHelpers.js';
 
 function EmptyState({ title, description }) {
+  const { t } = useLanguage();
   return (
     <div className="panel empty-state">
       <h2>{title}</h2>
       <p>{description}</p>
-      <Link className="button button--primary" to="/catalog">Перейти в каталог</Link>
+      <Link className="button button--primary" to="/catalog">{t('common.goToCatalog')}</Link>
     </div>
   );
 }
 
 export function StudentDashboardPage() {
-  const { user, courses, enrollments } = useApp();
+  const { user, courses, enrollments } = useApp((state) => ({
+    user: state.user, courses: state.courses, enrollments: state.enrollments,
+  }));
+  const { t } = useLanguage();
   const enrolledIds = Object.keys(enrollments).map(Number);
   const activeCourses = courses.filter((course) => enrolledIds.includes(course.id));
   const avgProgress = activeCourses.length > 0
@@ -27,19 +33,19 @@ export function StudentDashboardPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Кабинет студента" title={`Добрый день, ${user?.name ?? 'Гость'}`} description="Продолжайте обучение с того места, где остановились." />
+      <PageHeader eyebrow={t('student.cabinetEyebrow')} title={t('student.greeting', { name: user?.name ?? t('student.guest') })} description={t('student.dashboardDescription')} />
       <div className="stats-grid">
-        <StatCard value={String(activeCourses.length)} label="активных курсов" />
-        <StatCard value={`${avgProgress}%`} label="средний прогресс" />
-        <StatCard value={String(courses.length)} label="курсов на платформе" />
-        <StatCard value={String(certificateCount)} label="сертификата" />
+        <StatCard value={String(activeCourses.length)} label={t('student.statActiveCourses')} />
+        <StatCard value={`${avgProgress}%`} label={t('student.statAvgProgress')} />
+        <StatCard value={String(courses.length)} label={t('student.statCoursesOnPlatform')} />
+        <StatCard value={String(certificateCount)} label={t('student.statCertificates')} />
       </div>
       <section className="section">
-        <div className="section__header"><h2>Продолжить обучение</h2></div>
+        <div className="section__header"><h2>{t('home.continueLearning')}</h2></div>
         {activeCourses.length > 0 ? (
           <CourseGrid courses={activeCourses} showProgress enrollments={enrollments} limit={4} />
         ) : (
-          <EmptyState title="Пока нет активных курсов" description="Запишитесь на курс в каталоге, чтобы начать обучение." />
+          <EmptyState title={t('student.noActiveCoursesTitle')} description={t('student.noActiveCoursesDescription')} />
         )}
       </section>
     </>
@@ -47,40 +53,45 @@ export function StudentDashboardPage() {
 }
 
 export function MyCoursesPage() {
-  const { courses, enrollments } = useApp();
+  const { courses, enrollments } = useApp((state) => ({ courses: state.courses, enrollments: state.enrollments }));
+  const { t } = useLanguage();
   const enrolledIds = Object.keys(enrollments).map(Number);
   const myCourses = courses.filter((course) => enrolledIds.includes(course.id));
 
   return (
     <>
-      <PageHeader eyebrow="Обучение" title="Мои курсы" description="Все купленные и сохранённые программы." />
+      <PageHeader eyebrow={t('sidebar.learning')} title={t('student.myCoursesTitle')} description={t('student.myCoursesDescription')} />
       {myCourses.length > 0 ? (
         <CourseGrid courses={myCourses} showProgress enrollments={enrollments} />
       ) : (
-        <EmptyState title="Здесь пока пусто" description="Купленные курсы появятся тут после оформления заказа." />
+        <EmptyState title={t('student.emptyHereTitle')} description={t('student.emptyHereDescription')} />
       )}
     </>
   );
 }
 
 export function WishlistPage() {
-  const { courses, wishlistIds } = useApp();
+  const { courses, wishlistIds } = useApp((state) => ({ courses: state.courses, wishlistIds: state.wishlistIds }));
+  const { t } = useLanguage();
   const savedCourses = courses.filter((course) => wishlistIds.includes(course.id));
 
   return (
     <>
-      <PageHeader eyebrow="Сохранённое" title="Избранное" description="Курсы, к которым вы хотите вернуться." />
+      <PageHeader eyebrow={t('student.savedEyebrow')} title={t('student.wishlistTitle')} description={t('student.wishlistDescription')} />
       {savedCourses.length > 0 ? (
         <CourseGrid courses={savedCourses} />
       ) : (
-        <EmptyState title="Список избранного пуст" description="Нажмите на сердце на карточке курса, чтобы сохранить его сюда." />
+        <EmptyState title={t('student.wishlistEmptyTitle')} description={t('student.wishlistEmptyDescription')} />
       )}
     </>
   );
 }
 
 export function CertificatesPage() {
-  const { user, courses, enrollments } = useApp();
+  const { user, courses, enrollments } = useApp((state) => ({
+    user: state.user, courses: state.courses, enrollments: state.enrollments,
+  }));
+  const { t, dateLocale } = useLanguage();
   const completedCourses = courses.filter((course) => {
     const enrollment = enrollments[course.id];
     return enrollment && getCourseProgress(course, enrollment) === 100;
@@ -88,22 +99,22 @@ export function CertificatesPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Кабинет студента" title="Сертификаты" description="Полученные сертификаты и проверка подлинности." />
+      <PageHeader eyebrow={t('student.cabinetEyebrow')} title={t('student.certificatesTitle')} description={t('student.certificatesDescription')} />
       {completedCourses.length > 0 ? (
         completedCourses.map((course) => {
           const enrollment = enrollments[course.id];
-          const date = new Date(enrollment.enrolledAt).toLocaleDateString('ru-RU');
+          const date = new Date(enrollment.enrolledAt).toLocaleDateString(dateLocale);
           return (
             <div className="certificate-card" key={course.id}>
-              <span className="eyebrow">Сертификат о прохождении</span>
+              <span className="eyebrow">{t('student.certificateBadge')}</span>
               <h2>{course.title}</h2>
-              <p>Выдан: {user?.name ?? 'Студент'} · {date}</p>
-              <Button onClick={() => window.print()}>Печать</Button>
+              <p>{t('student.issuedTo', { name: user?.name ?? t('student.guest'), date })}</p>
+              <Button onClick={() => window.print()}>{t('common.print')}</Button>
             </div>
           );
         })
       ) : (
-        <EmptyState title="Сертификатов пока нет" description="Пройдите все уроки курса до конца, чтобы получить сертификат." />
+        <EmptyState title={t('student.noCertificatesTitle')} description={t('student.noCertificatesDescription')} />
       )}
     </>
   );
@@ -111,11 +122,23 @@ export function CertificatesPage() {
 
 export function LessonPage() {
   const { courseId, lessonId } = useParams();
-  const { courses, enrollments, toggleLessonComplete, coursesLoaded } = useApp();
+  const { courses, enrollments, toggleLessonComplete, coursesLoaded, fetchCourseDetail } = useApp((state) => ({
+    courses: state.courses,
+    enrollments: state.enrollments,
+    toggleLessonComplete: state.toggleLessonComplete,
+    coursesLoaded: state.coursesLoaded,
+    fetchCourseDetail: state.fetchCourseDetail,
+  }));
+  const { t } = useLanguage();
   const course = courses.find((item) => item.id === Number(courseId));
   const enrollment = enrollments[Number(courseId)];
 
+  useEffect(() => {
+    fetchCourseDetail(Number(courseId));
+  }, [courseId, fetchCourseDetail]);
+
   if (!course) return coursesLoaded ? <Navigate to="/student/courses" replace /> : null;
+  if (!isCourseDetailLoaded(course)) return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
 
   const lessons = getLessons(course);
   const activeId = Number(lessonId);
@@ -131,8 +154,8 @@ export function LessonPage() {
   if (!lesson) {
     return (
       <div className="panel empty-state">
-        <h2>В этом курсе пока нет уроков</h2>
-        <p>Преподаватель ещё не добавил программу курса.</p>
+        <h2>{t('student.noLessonsTitle')}</h2>
+        <p>{t('student.noLessonsDescription')}</p>
       </div>
     );
   }
@@ -154,23 +177,23 @@ export function LessonPage() {
         )}
         <span className="eyebrow">{lesson.sectionTitle}</span>
         <h1>{lesson.title}</h1>
-        <p>{lesson.content || 'Материалы урока скоро появятся.'}</p>
+        <p>{lesson.content || t('student.lessonMaterialsSoon')}</p>
         <div className="progress"><div className="progress__bar" style={{ width: `${progress}%` }} /></div>
         <Button
           variant={completed ? 'secondary' : 'primary'}
           onClick={() => toggleLessonComplete(course.id, lesson.id)}
         >
-          {completed ? 'Урок пройден ✓' : 'Отметить как пройденный'}
+          {completed ? t('student.lessonCompleted') : t('student.markComplete')}
         </Button>
         {progress === 100 && (
           <div className="panel" style={{ marginTop: 12 }}>
-            <strong>Поздравляем, курс завершён! </strong>
-            <Link to="/student/certificates">Получить сертификат →</Link>
+            <strong>{t('student.courseCompleted')}</strong>
+            <Link to="/student/certificates">{t('student.getCertificate')}</Link>
           </div>
         )}
         <div className="lesson-nav">
-          {prevLesson ? <Link to={`/student/lesson/${course.id}/${prevLesson.id}`}>← Предыдущий урок</Link> : <span />}
-          {nextLesson ? <Link to={`/student/lesson/${course.id}/${nextLesson.id}`}>Следующий урок →</Link> : <span />}
+          {prevLesson ? <Link to={`/student/lesson/${course.id}/${prevLesson.id}`}>{t('student.prevLesson')}</Link> : <span />}
+          {nextLesson ? <Link to={`/student/lesson/${course.id}/${nextLesson.id}`}>{t('student.nextLesson')}</Link> : <span />}
         </div>
       </section>
       <aside className="lesson-sidebar panel">
@@ -193,9 +216,10 @@ export function LessonPage() {
 }
 
 export function SimpleStudentPage({ title, description }) {
+  const { t } = useLanguage();
   return (
     <>
-      <PageHeader eyebrow="Кабинет студента" title={title} description={description} />
+      <PageHeader eyebrow={t('student.cabinetEyebrow')} title={title} description={description} />
       <div className="panel empty-state">
         <h2>{title}</h2>
         <p>{description}</p>

@@ -67,6 +67,7 @@ button { cursor: pointer; }
 .header__auth { display: flex; gap: 8px; }
 .header__auth .button { padding: 8px 14px; font-size: 13px; white-space: nowrap; }
 .theme-toggle { border: 1px solid var(--line); background: var(--surface-alt); color: var(--text); width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 16px; line-height: 1; }
+.language-switcher { border: 1px solid var(--line); background: var(--surface-alt); color: var(--text); height: 36px; border-radius: 18px; padding: 0 10px; font-size: 13px; font-weight: 600; }
 .sidebar { padding: 18px 14px; border-right: 1px solid var(--line); background: var(--surface-alt); }
 .sidebar__group { margin-bottom: 18px; display: grid; gap: 4px; }
 .sidebar__group > span { padding: 8px 10px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
@@ -147,7 +148,7 @@ input, select, textarea { border: 1px solid var(--line); border-radius: 8px; pad
 .profile-hero { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; }
 .marketing-hero { padding: 42px; }
 .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 20px; position: relative; }
-.auth-page__theme { position: absolute; top: 20px; right: 20px; }
+.auth-page__theme { position: absolute; top: 20px; right: 20px; display: flex; gap: 8px; align-items: center; }
 .auth-card { width: min(420px, 100%); display: grid; gap: 14px; }
 .auth-card h1 { margin: 0; }
 .star-rating { color: var(--star-empty); letter-spacing: 2px; }

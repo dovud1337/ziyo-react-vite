@@ -3,19 +3,13 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import PageHeader from '../components/PageHeader.jsx';
 import { categories, levels } from '../data/courses.js';
-import { useApp } from '../context/AppContext.jsx';
+import { useApp } from '../store/appStore.js';
+import { useLanguage } from '../context/LanguageContext.jsx';
 import { getAverageRating, getEffectivePrice, getLessonCount } from '../utils/courseHelpers.js';
 
-const SORTS = [
-  { value: 'newest', label: 'Сначала новые' },
-  { value: 'price-asc', label: 'Сначала дешевле' },
-  { value: 'price-desc', label: 'Сначала дороже' },
-  { value: 'rating', label: 'По рейтингу' },
-  { value: 'lessons', label: 'По количеству уроков' },
-];
-
 export default function CatalogPage() {
-  const { courses } = useApp();
+  const { courses } = useApp((state) => ({ courses: state.courses }));
+  const { t, translateCategory, translateLevel } = useLanguage();
   const { category: categoryParam } = useParams();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') ?? '';
@@ -25,6 +19,14 @@ export default function CatalogPage() {
   const [maxPrice, setMaxPrice] = useState('');
   const [minRating, setMinRating] = useState('0');
   const [sort, setSort] = useState('newest');
+
+  const SORTS = [
+    { value: 'newest', label: t('catalog.sortNewest') },
+    { value: 'price-asc', label: t('catalog.sortPriceAsc') },
+    { value: 'price-desc', label: t('catalog.sortPriceDesc') },
+    { value: 'rating', label: t('catalog.sortRating') },
+    { value: 'lessons', label: t('catalog.sortLessons') },
+  ];
 
   useEffect(() => {
     setActiveCategory(categoryParam ?? 'Все');
@@ -68,9 +70,9 @@ export default function CatalogPage() {
   return (
     <>
       <PageHeader
-        eyebrow={query ? `Результаты по «${query}»` : `${filteredCourses.length} курсов`}
-        title="Каталог"
-        description="Выберите направление, уровень и формат обучения."
+        eyebrow={query ? t('catalog.resultsFor', { query }) : t('catalog.coursesCount', { count: filteredCourses.length })}
+        title={t('catalog.title')}
+        description={t('catalog.description')}
       />
       <div className="chips">
         {categories.map((category) => (
@@ -79,7 +81,7 @@ export default function CatalogPage() {
             className={activeCategory === category ? 'active' : ''}
             onClick={() => setActiveCategory(category)}
           >
-            {category}
+            {translateCategory(category)}
           </button>
         ))}
       </div>
@@ -89,21 +91,21 @@ export default function CatalogPage() {
           {levels.map((level) => (
             <label key={level}>
               <input type="checkbox" checked={activeLevels.includes(level)} onChange={() => toggleLevel(level)} />
-              {level}
+              {translateLevel(level)}
             </label>
           ))}
         </div>
-        <label className="filter-field">Цена от<input type="number" min="0" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} style={{ width: 90 }} /></label>
-        <label className="filter-field">Цена до<input type="number" min="0" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} style={{ width: 90 }} /></label>
-        <label className="filter-field">Рейтинг от
+        <label className="filter-field">{t('catalog.priceFrom')}<input type="number" min="0" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} style={{ width: 90 }} /></label>
+        <label className="filter-field">{t('catalog.priceTo')}<input type="number" min="0" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} style={{ width: 90 }} /></label>
+        <label className="filter-field">{t('catalog.ratingFrom')}
           <select value={minRating} onChange={(event) => setMinRating(event.target.value)}>
-            <option value="0">Любой</option>
+            <option value="0">{t('catalog.ratingAny')}</option>
             <option value="3">3+</option>
             <option value="4">4+</option>
             <option value="4.5">4.5+</option>
           </select>
         </label>
-        <label className="filter-field">Сортировка
+        <label className="filter-field">{t('catalog.sortLabel')}
           <select value={sort} onChange={(event) => setSort(event.target.value)}>
             {SORTS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
           </select>
@@ -112,9 +114,9 @@ export default function CatalogPage() {
 
       {filteredCourses.length === 0 ? (
         <div className="panel empty-state">
-          <h2>{courses.length === 0 ? 'Курсов пока нет' : 'Ничего не найдено'}</h2>
-          <p>{courses.length === 0 ? 'Станьте первым преподавателем на платформе.' : 'Попробуйте изменить фильтры или запрос поиска.'}</p>
-          {courses.length === 0 && <Link className="button button--primary" to="/instructor/create">Создать курс</Link>}
+          <h2>{courses.length === 0 ? t('home.noCourses') : t('catalog.nothingFound')}</h2>
+          <p>{courses.length === 0 ? t('home.beFirstInstructor') : t('catalog.tryDifferentFilters')}</p>
+          {courses.length === 0 && <Link className="button button--primary" to="/instructor/create">{t('common.createCourse')}</Link>}
         </div>
       ) : (
         <CourseGrid courses={filteredCourses} />

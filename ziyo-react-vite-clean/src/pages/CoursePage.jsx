@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import CourseGrid from '../components/CourseGrid.jsx';
 import StarRating from '../components/StarRating.jsx';
-import { useApp } from '../context/AppContext.jsx';
-import { getAverageRating, getEffectivePrice, getLessonCount, getLessons, getReviewCount, hasDiscount } from '../utils/courseHelpers.js';
+import { useApp } from '../store/appStore.js';
+import { useLanguage } from '../context/LanguageContext.jsx';
+import { getAverageRating, getEffectivePrice, getLessonCount, getLessons, getReviewCount, hasDiscount, isCourseDetailLoaded } from '../utils/courseHelpers.js';
 
 function ReviewForm({ courseId }) {
-  const { addReview } = useApp();
+  const { addReview } = useApp((state) => ({ addReview: state.addReview }));
+  const { t } = useLanguage();
   const [rating, setRating] = useState(5);
   const [text, setText] = useState('');
 
@@ -20,15 +22,18 @@ function ReviewForm({ courseId }) {
 
   return (
     <form className="form" onSubmit={handleSubmit} style={{ marginTop: 12 }}>
-      <label>Ваша оценка<StarRating value={rating} interactive onChange={setRating} /></label>
-      <label>Отзыв<textarea rows="3" value={text} onChange={(event) => setText(event.target.value)} placeholder="Поделитесь впечатлением о курсе" /></label>
-      <Button type="submit">Оставить отзыв</Button>
+      <label>{t('course.yourRating')}<StarRating value={rating} interactive onChange={setRating} /></label>
+      <label>{t('course.yourReview')}<textarea rows="3" value={text} onChange={(event) => setText(event.target.value)} placeholder={t('course.reviewPlaceholder')} /></label>
+      <Button type="submit">{t('course.submitReview')}</Button>
     </form>
   );
 }
 
 function QnaThread({ course }) {
-  const { user, addQuestion, addReply } = useApp();
+  const { user, addQuestion, addReply } = useApp((state) => ({
+    user: state.user, addQuestion: state.addQuestion, addReply: state.addReply,
+  }));
+  const { t, dateLocale } = useLanguage();
   const [question, setQuestion] = useState('');
   const [replyDrafts, setReplyDrafts] = useState({});
 
@@ -49,10 +54,10 @@ function QnaThread({ course }) {
 
   return (
     <>
-      {course.qna.length === 0 && <p>Пока нет вопросов. Будьте первым.</p>}
+      {course.qna.length === 0 && <p>{t('course.noQuestionsYet')}</p>}
       {course.qna.map((item) => (
         <div className="qna-item" key={item.id}>
-          <div className="review-item__meta"><strong>{item.author}</strong><span>{new Date(item.date).toLocaleDateString('ru-RU')}</span></div>
+          <div className="review-item__meta"><strong>{item.author}</strong><span>{new Date(item.date).toLocaleDateString(dateLocale)}</span></div>
           <p>{item.question}</p>
           {item.replies.map((reply) => (
             <div className="qna-reply" key={reply.id}>
@@ -62,22 +67,22 @@ function QnaThread({ course }) {
           {user && (
             <form onSubmit={handleReply(item.id)} style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <input
-                placeholder="Ответить..."
+                placeholder={t('course.replyPlaceholder')}
                 value={replyDrafts[item.id] ?? ''}
                 onChange={(event) => setReplyDrafts((prev) => ({ ...prev, [item.id]: event.target.value }))}
               />
-              <Button type="submit" variant="secondary">Ответить</Button>
+              <Button type="submit" variant="secondary">{t('course.reply')}</Button>
             </form>
           )}
         </div>
       ))}
       {user ? (
         <form onSubmit={handleAsk} className="form" style={{ marginTop: 14 }}>
-          <label>Задать вопрос<textarea rows="2" value={question} onChange={(event) => setQuestion(event.target.value)} /></label>
-          <Button type="submit">Спросить</Button>
+          <label>{t('course.askQuestion')}<textarea rows="2" value={question} onChange={(event) => setQuestion(event.target.value)} /></label>
+          <Button type="submit">{t('course.ask')}</Button>
         </form>
       ) : (
-        <p>Войдите, чтобы задать вопрос преподавателю.</p>
+        <p>{t('course.loginToAsk')}</p>
       )}
     </>
   );
@@ -86,10 +91,24 @@ function QnaThread({ course }) {
 export default function CoursePage() {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const { courses, cartIds, enrollments, addToCart, user, coursesLoaded } = useApp();
+  const { courses, cartIds, enrollments, addToCart, user, coursesLoaded, fetchCourseDetail } = useApp((state) => ({
+    courses: state.courses,
+    cartIds: state.cartIds,
+    enrollments: state.enrollments,
+    addToCart: state.addToCart,
+    user: state.user,
+    coursesLoaded: state.coursesLoaded,
+    fetchCourseDetail: state.fetchCourseDetail,
+  }));
+  const { t, translateCategory, translateLevel, dateLocale } = useLanguage();
   const course = courses.find((item) => item.id === Number(courseId));
 
+  useEffect(() => {
+    fetchCourseDetail(Number(courseId));
+  }, [courseId, fetchCourseDetail]);
+
   if (!course) return coursesLoaded ? <Navigate to="/catalog" replace /> : null;
+  if (!isCourseDetailLoaded(course)) return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
 
   const isEnrolled = Boolean(enrollments[course.id]);
   const isInCart = cartIds.includes(course.id);
@@ -102,15 +121,15 @@ export default function CoursePage() {
     <>
       <section className="course-hero">
         <div>
-          <span className="eyebrow">{course.category} · {course.level}</span>
+          <span className="eyebrow">{translateCategory(course.category)} · {translateLevel(course.level)}</span>
           <h1>{course.title}</h1>
           <p>{course.description}</p>
           <div className="course-facts">
             {rating != null ? (
-              <span><StarRating value={rating} /> {rating} ({reviewCount} отзывов)</span>
-            ) : <span>Нет отзывов</span>}
-            <span>{getLessonCount(course)} уроков</span>
-            <span>Преподаватель: {course.teacher}</span>
+              <span><StarRating value={rating} /> {rating} ({reviewCount} {t('common.reviewsSuffix')})</span>
+            ) : <span>{t('common.noReviews')}</span>}
+            <span>{getLessonCount(course)} {t('common.lessonsWord')}</span>
+            <span>{t('course.teacherLabel', { name: course.teacher })}</span>
           </div>
         </div>
         <aside className="purchase-card">
@@ -121,20 +140,20 @@ export default function CoursePage() {
           </strong>
           {isEnrolled ? (
             lessons.length > 0 ? (
-              <Button variant="secondary" onClick={() => navigate(`/student/lesson/${course.id}/${lessons[0].id}`)}>Продолжить обучение</Button>
+              <Button variant="secondary" onClick={() => navigate(`/student/lesson/${course.id}/${lessons[0].id}`)}>{t('home.continueLearning')}</Button>
             ) : (
-              <Button variant="secondary">Вы записаны ✓</Button>
+              <Button variant="secondary">{t('course.alreadyEnrolled')}</Button>
             )
           ) : isInCart ? (
-            <Button variant="secondary" onClick={() => navigate('/cart')}>В корзине · перейти</Button>
+            <Button variant="secondary" onClick={() => navigate('/cart')}>{t('course.inCartGoTo')}</Button>
           ) : (
-            <Button onClick={() => { addToCart(course.id); navigate('/cart'); }}>Записаться на курс</Button>
+            <Button onClick={() => { addToCart(course.id); navigate('/cart'); }}>{t('course.enroll')}</Button>
           )}
         </aside>
       </section>
 
       <section className="section panel">
-        <h2>Программа курса</h2>
+        <h2>{t('course.curriculum')}</h2>
         <div className="curriculum-outline">
           {course.sections.map((section) => (
             <details key={section.id}>
@@ -150,14 +169,14 @@ export default function CoursePage() {
       </section>
 
       <section className="section panel">
-        <h2>Отзывы {reviewCount > 0 && `(${reviewCount})`}</h2>
-        {course.reviews.length === 0 && <p>Пока нет отзывов об этом курсе.</p>}
+        <h2>{t('course.reviews')} {reviewCount > 0 && `(${reviewCount})`}</h2>
+        {course.reviews.length === 0 && <p>{t('course.noReviewsYet')}</p>}
         {course.reviews.map((review) => (
           <div className="review-item" key={review.id}>
             <div className="review-item__meta">
               <strong>{review.author}</strong>
               <StarRating value={review.rating} />
-              <span>{new Date(review.date).toLocaleDateString('ru-RU')}</span>
+              <span>{new Date(review.date).toLocaleDateString(dateLocale)}</span>
             </div>
             <p>{review.text}</p>
           </div>
@@ -166,12 +185,12 @@ export default function CoursePage() {
       </section>
 
       <section className="section panel">
-        <h2>Вопросы и ответы</h2>
+        <h2>{t('course.qna')}</h2>
         <QnaThread course={course} />
       </section>
 
       <section className="section">
-        <div className="section__header"><h2>Похожие курсы</h2></div>
+        <div className="section__header"><h2>{t('course.similarCourses')}</h2></div>
         <CourseGrid courses={courses.filter((item) => item.id !== course.id && item.category === course.category)} limit={4} />
       </section>
     </>

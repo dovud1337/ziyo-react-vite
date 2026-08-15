@@ -4,19 +4,27 @@ export function getLessons(course) {
   ));
 }
 
+export function isCourseDetailLoaded(course) {
+  return Array.isArray(course.sections);
+}
+
 export function getLessonCount(course) {
-  return getLessons(course).length;
+  if (Array.isArray(course.sections)) return getLessons(course).length;
+  return course.lessonCount ?? 0;
 }
 
 export function getReviewCount(course) {
-  return (course.reviews ?? []).length;
+  if (Array.isArray(course.reviews)) return course.reviews.length;
+  return course.reviewCount ?? 0;
 }
 
 export function getAverageRating(course) {
-  const reviews = course.reviews ?? [];
-  if (reviews.length === 0) return null;
-  const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-  return Math.round((total / reviews.length) * 10) / 10;
+  if (Array.isArray(course.reviews)) {
+    if (course.reviews.length === 0) return null;
+    const total = course.reviews.reduce((sum, review) => sum + review.rating, 0);
+    return Math.round((total / course.reviews.length) * 10) / 10;
+  }
+  return course.avgRating ?? null;
 }
 
 export function getEffectivePrice(course) {
