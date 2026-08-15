@@ -230,7 +230,7 @@ export const translations = {
       lightTheme: 'Мавзӯи равшан', darkTheme: 'Мавзӯи торик',
     },
     home: {
-      badge: 'Осиёи Марказӣ · ИДМ', title: 'Аз ҳамватанонатон омӯзед. Дар ҳар куҷо кор кунед.',
+      badge: 'Осиёи Марказӣ · ИДМ', title: 'Аз ҳамдиёрони худ омӯзед. Дар ҳар куҷо кор кунед.',
       subtitle: 'Курсҳои амалӣ бо забони русӣ ва забонҳои маҳаллӣ.', viewCourses: 'Курсҳоро дидан',
       becomeInstructor: 'Омӯзгор шудан', metricCourses: 'курс', metricInstructors: 'омӯзгор',
       metricLessons: 'дарс', metricYourCourses: 'курсҳои шумо', nowOnPlatform: 'Ҳоло дар платформа',
