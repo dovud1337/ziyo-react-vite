@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
 
-function Header() {
+function Header({ onToggleMenu }) {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
   const { user } = useApp((state) => ({ user: state.user }));
@@ -19,6 +19,7 @@ function Header() {
 
   return (
     <header className="header">
+      <button type="button" className="menu-button" aria-label="Меню" onClick={onToggleMenu}>☰</button>
       <NavLink to="/" className="logo">ZIYO</NavLink>
       <nav className="header__nav">
         <NavLink to="/catalog">{t('nav.catalog')}</NavLink>
@@ -49,42 +50,49 @@ function Header() {
   );
 }
 
-function Sidebar() {
+function Sidebar({ open, onClose }) {
   const navigate = useNavigate();
   const { user, logout } = useApp((state) => ({ user: state.user, logout: state.logout }));
   const { t } = useLanguage();
 
   const handleLogout = () => {
     logout();
+    onClose();
     navigate('/');
   };
 
   return (
-    <aside className="sidebar">
-      {sidebarGroups.map((group) => (
-        <div key={group.titleKey} className="sidebar__group">
-          <span>{t(group.titleKey)}</span>
-          {group.items.map(([to, labelKey]) => (
-            <NavLink key={to} to={to} end={to === '/'}>
-              {t(labelKey)}
-            </NavLink>
-          ))}
+    <>
+      {open && <div className="sidebar-overlay" onClick={onClose} />}
+      <aside className={`sidebar${open ? ' sidebar--open' : ''}`}>
+        {sidebarGroups.map((group) => (
+          <div key={group.titleKey} className="sidebar__group">
+            <span>{t(group.titleKey)}</span>
+            {group.items.map(([to, labelKey]) => (
+              <NavLink key={to} to={to} end={to === '/'} onClick={onClose}>
+                {t(labelKey)}
+              </NavLink>
+            ))}
+          </div>
+        ))}
+        <div className="sidebar__group">
+          <span>{t('nav.forAuthor')}</span>
+          <NavLink to="/instructor" onClick={onClose}>{t('nav.studio')}</NavLink>
         </div>
-      ))}
-      <div className="sidebar__group">
-        <span>{t('nav.forAuthor')}</span>
-        <NavLink to="/instructor">{t('nav.studio')}</NavLink>
-      </div>
-      <div className="sidebar__group">
-        <span>{t('nav.management')}</span>
-        <NavLink to="/admin">{t('nav.adminPanel')}</NavLink>
-        {user ? (
-          <button type="button" className="sidebar__logout" onClick={handleLogout}>{t('nav.logout')}</button>
-        ) : (
-          <NavLink to="/login">{t('nav.login')}</NavLink>
-        )}
-      </div>
-    </aside>
+        <div className="sidebar__group">
+          <span>{t('nav.management')}</span>
+          <NavLink to="/admin" onClick={onClose}>{t('nav.adminPanel')}</NavLink>
+          {user ? (
+            <button type="button" className="sidebar__logout" onClick={handleLogout}>{t('nav.logout')}</button>
+          ) : (
+            <>
+              <NavLink to="/login" onClick={onClose}>{t('nav.login')}</NavLink>
+              <NavLink to="/register" onClick={onClose}>{t('nav.register')}</NavLink>
+            </>
+          )}
+        </div>
+      </aside>
+    </>
   );
 }
 
@@ -109,11 +117,12 @@ export default function MainLayout() {
     coursesError: state.coursesError,
     hasCourses: state.courses.length > 0,
   }));
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="app-shell">
-      <Header />
-      <Sidebar />
+      <Header onToggleMenu={() => setMenuOpen((v) => !v)} />
+      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main className="main-content">
         {coursesError && !hasCourses ? <CoursesLoadError /> : <Outlet />}
       </main>
