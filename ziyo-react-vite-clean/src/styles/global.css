@@ -199,12 +199,17 @@ input, select, textarea { border: 1px solid var(--line); border-radius: 8px; pad
   .compact-hero, .course-hero, .lesson-layout { grid-template-columns: 1fr; }
   .course-grid, .people-grid, .feature-grid { grid-template-columns: repeat(2, 1fr); }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .course-card__preview { aspect-ratio: 16 / 10; height: auto; box-sizing: border-box; }
   .header__search { display: none; }
   .header__auth { display: none; }
+  .filter-bar { display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; }
+  .filter-field--checks { grid-column: 1 / -1; flex-wrap: wrap; }
+  .filter-field input, .filter-field select { width: 100%; box-sizing: border-box; }
 }
 @media (max-width: 520px) {
   .course-grid, .people-grid, .feature-grid { grid-template-columns: 1fr; }
   .compact-hero h1, .marketing-hero h1, .course-hero h1 { font-size: 38px; }
   .page-header h1 { font-size: 34px; }
   .hero-metrics, .stats-grid { grid-template-columns: 1fr 1fr; }
+  .filter-bar { grid-template-columns: 1fr; }
 }

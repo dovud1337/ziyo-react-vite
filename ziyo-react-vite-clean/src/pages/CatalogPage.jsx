@@ -97,8 +97,8 @@ export default function CatalogPage() {
             </label>
           ))}
         </div>
-        <label className="filter-field">{t('catalog.priceFrom')}<input type="number" min="0" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} style={{ width: 90 }} /></label>
-        <label className="filter-field">{t('catalog.priceTo')}<input type="number" min="0" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} style={{ width: 90 }} /></label>
+        <label className="filter-field">{t('catalog.priceFrom')}<input type="number" min="0" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} /></label>
+        <label className="filter-field">{t('catalog.priceTo')}<input type="number" min="0" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} /></label>
         <label className="filter-field">{t('catalog.ratingFrom')}
           <select value={minRating} onChange={(event) => setMinRating(event.target.value)}>
             <option value="0">{t('catalog.ratingAny')}</option>
