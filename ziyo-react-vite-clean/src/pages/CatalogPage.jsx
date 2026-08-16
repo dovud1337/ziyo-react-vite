@@ -9,7 +9,11 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 import { getAverageRating, getEffectivePrice, getLessonCount } from '../utils/courseHelpers.js';
 
 export default function CatalogPage() {
-  const { courses } = useApp((state) => ({ courses: state.courses }));
+  const { courses, coursesError, refreshCourses } = useApp((state) => ({
+    courses: state.courses,
+    coursesError: state.coursesError,
+    refreshCourses: state.refreshCourses,
+  }));
   const { t, translateCategory, translateLevel } = useLanguage();
   const { category: categoryParam } = useParams();
   const [searchParams] = useSearchParams();
@@ -67,6 +71,16 @@ export default function CatalogPage() {
     }
     return sorted;
   }, [courses, activeCategory, query, activeLevels, minPrice, maxPrice, minRating, sort]);
+
+  if (coursesError && courses.length === 0) {
+    return (
+      <div className="panel empty-state">
+        <h2>{t('common.loadErrorTitle')}</h2>
+        <p>{coursesError}</p>
+        <button type="button" className="button button--primary" onClick={() => refreshCourses().catch(() => {})}>{t('common.retry')}</button>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -96,27 +96,7 @@ function Sidebar({ open, onClose }) {
   );
 }
 
-function CoursesLoadError() {
-  const { t } = useLanguage();
-  const { coursesError, refreshCourses } = useApp((state) => ({
-    coursesError: state.coursesError,
-    refreshCourses: state.refreshCourses,
-  }));
-
-  return (
-    <div className="panel empty-state">
-      <h2>{t('common.loadErrorTitle')}</h2>
-      <p>{coursesError}</p>
-      <button type="button" className="button button--primary" onClick={() => refreshCourses()}>{t('common.retry')}</button>
-    </div>
-  );
-}
-
 export default function MainLayout() {
-  const { coursesError, hasCourses } = useApp((state) => ({
-    coursesError: state.coursesError,
-    hasCourses: state.courses.length > 0,
-  }));
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -124,7 +104,7 @@ export default function MainLayout() {
       <Header onToggleMenu={() => setMenuOpen((v) => !v)} />
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main className="main-content">
-        {coursesError && !hasCourses ? <CoursesLoadError /> : <Outlet />}
+        <Outlet />
       </main>
     </div>
   );

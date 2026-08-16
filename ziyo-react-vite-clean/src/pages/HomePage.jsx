@@ -7,12 +7,27 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 import { getLessonCount } from '../utils/courseHelpers.js';
 
 export default function HomePage() {
-  const { courses, enrollments } = useApp((state) => ({ courses: state.courses, enrollments: state.enrollments }));
+  const { courses, enrollments, coursesError, refreshCourses } = useApp((state) => ({
+    courses: state.courses,
+    enrollments: state.enrollments,
+    coursesError: state.coursesError,
+    refreshCourses: state.refreshCourses,
+  }));
   const { t, translateCategory } = useLanguage();
   const enrolledIds = Object.keys(enrollments).map(Number);
   const activeCourses = courses.filter((course) => enrolledIds.includes(course.id));
   const teacherCount = new Set(courses.map((course) => course.teacher)).size;
   const lessonCount = courses.reduce((sum, course) => sum + getLessonCount(course), 0);
+
+  if (coursesError && courses.length === 0) {
+    return (
+      <div className="panel empty-state">
+        <h2>{t('common.loadErrorTitle')}</h2>
+        <p>{coursesError}</p>
+        <button type="button" className="button button--primary" onClick={() => refreshCourses().catch(() => {})}>{t('common.retry')}</button>
+      </div>
+    );
+  }
 
   return (
     <>
