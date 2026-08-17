@@ -35,6 +35,17 @@ export function hasDiscount(course) {
   return course.discountPrice != null && course.discountPrice < course.price;
 }
 
+export function getCourseThumbnail(course) {
+  const lesson = getLessons(course).find(
+    (item) => item.type === 'video' && item.videoUrl?.includes('mediadelivery.net/embed/'),
+  );
+  if (!lesson) return null;
+  const guid = lesson.videoUrl.split('?')[0].split('/').filter(Boolean).pop();
+  const hostname = import.meta.env.VITE_BUNNY_CDN_HOSTNAME;
+  if (!hostname || !guid) return null;
+  return `https://${hostname}/${guid}/thumbnail.jpg`;
+}
+
 export function getCourseProgress(course, enrollment) {
   const total = getLessonCount(course);
   if (!enrollment || total === 0) return 0;

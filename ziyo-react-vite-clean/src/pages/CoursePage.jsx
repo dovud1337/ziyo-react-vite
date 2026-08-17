@@ -6,7 +6,7 @@ import StarRating from '../components/StarRating.jsx';
 import SeoHead from '../components/SeoHead.jsx';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
-import { getAverageRating, getEffectivePrice, getLessonCount, getLessons, getReviewCount, hasDiscount, isCourseDetailLoaded } from '../utils/courseHelpers.js';
+import { getAverageRating, getCourseThumbnail, getEffectivePrice, getLessonCount, getLessons, getReviewCount, hasDiscount, isCourseDetailLoaded } from '../utils/courseHelpers.js';
 
 function ReviewForm({ courseId }) {
   const { addReview } = useApp((state) => ({ addReview: state.addReview }));
@@ -116,6 +116,7 @@ export default function CoursePage() {
   const rating = getAverageRating(course);
   const reviewCount = getReviewCount(course);
   const lessons = getLessons(course);
+  const cover = getCourseThumbnail(course);
   const alreadyReviewed = user && course.reviews.some((review) => review.author === user.name);
 
   const handleEnroll = () => {
@@ -141,7 +142,10 @@ export default function CoursePage() {
           </div>
         </div>
         <aside className="purchase-card">
-          <div className={`purchase-card__preview preview--${course.tone}`} />
+          <div
+            className={`purchase-card__preview preview--${course.tone}`}
+            style={cover ? { backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+          />
           <strong>
             {hasDiscount(course) && <span className="price-original">{course.price} TJS</span>}
             {getEffectivePrice(course)} TJS

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
 import StarRating from './StarRating.jsx';
-import { getAverageRating, getEffectivePrice, getLessonCount, getReviewCount, hasDiscount } from '../utils/courseHelpers.js';
+import { getAverageRating, getCourseThumbnail, getEffectivePrice, getLessonCount, getReviewCount, hasDiscount } from '../utils/courseHelpers.js';
 
 export default function CourseCard({ course, showProgress = false, progress = 0 }) {
   const { wishlistIds, toggleWishlist } = useApp((state) => ({
@@ -13,6 +13,7 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
   const saved = wishlistIds.includes(course.id);
   const rating = getAverageRating(course);
   const reviewCount = getReviewCount(course);
+  const cover = getCourseThumbnail(course);
 
   const handleWishlistClick = (event) => {
     event.preventDefault();
@@ -22,7 +23,10 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
 
   return (
     <Link to={`/courses/${course.id}`} className="course-card">
-      <div className={`course-card__preview preview--${course.tone}`}>
+      <div
+        className={`course-card__preview preview--${course.tone}`}
+        style={cover ? { backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+      >
         <span className="course-card__badge">{getLessonCount(course)} {t('common.lessonsWord')}</span>
         <span className="course-card__duration">{translateLevel(course.level)}</span>
         <button
