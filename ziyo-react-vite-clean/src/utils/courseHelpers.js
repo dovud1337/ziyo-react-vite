@@ -36,11 +36,11 @@ export function hasDiscount(course) {
 }
 
 export function getCourseThumbnail(course) {
-  const lesson = getLessons(course).find(
+  const videoUrl = course.previewVideoUrl ?? getLessons(course).find(
     (item) => item.type === 'video' && item.videoUrl?.includes('mediadelivery.net/embed/'),
-  );
-  if (!lesson) return null;
-  const guid = lesson.videoUrl.split('?')[0].split('/').filter(Boolean).pop();
+  )?.videoUrl;
+  if (!videoUrl?.includes('mediadelivery.net/embed/')) return null;
+  const guid = videoUrl.split('?')[0].split('/').filter(Boolean).pop();
   const hostname = import.meta.env.VITE_BUNNY_CDN_HOSTNAME;
   if (!hostname || !guid) return null;
   return `https://${hostname}/${guid}/thumbnail.jpg`;

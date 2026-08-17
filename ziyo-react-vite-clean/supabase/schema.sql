@@ -199,7 +199,8 @@ select
   c.created_at,
   coalesce(l.lesson_count, 0) as lesson_count,
   coalesce(r.review_count, 0) as review_count,
-  r.avg_rating
+  r.avg_rating,
+  fv.video_url as first_video_url
 from courses c
 left join (
   select s.course_id, count(le.id) as lesson_count
@@ -211,7 +212,15 @@ left join (
   select course_id, count(*) as review_count, round(avg(rating)::numeric, 1) as avg_rating
   from reviews
   group by course_id
-) r on r.course_id = c.id;
+) r on r.course_id = c.id
+left join lateral (
+  select le.video_url
+  from sections s
+  join lessons le on le.section_id = s.id
+  where s.course_id = c.id and le.type = 'video' and le.video_url is not null
+  order by s.position, le.position
+  limit 1
+) fv on true;
 
 -- ---------------------------------------------------------------------------
 -- per-user state: cart, enrollments, completed lessons, wishlist, subscriptions

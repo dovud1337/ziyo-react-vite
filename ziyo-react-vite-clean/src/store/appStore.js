@@ -16,6 +16,7 @@ function mapCourseCardRow(row) {
     lessonCount: row.lesson_count ?? 0,
     reviewCount: row.review_count ?? 0,
     avgRating: row.avg_rating != null ? Number(row.avg_rating) : null,
+    previewVideoUrl: row.first_video_url ?? null,
   };
 }
 
