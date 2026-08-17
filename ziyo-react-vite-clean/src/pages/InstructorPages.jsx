@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import * as tus from 'tus-js-client';
 import PageHeader from '../components/PageHeader.jsx';
 import StatCard from '../components/StatCard.jsx';
 import Button from '../components/Button.jsx';
 import CourseGrid from '../components/CourseGrid.jsx';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
+import { supabase } from '../lib/supabaseClient.js';
 import { categories, levels } from '../data/courses.js';
 import { getAverageRating, getLessonCount, getReviewCount } from '../utils/courseHelpers.js';
 
@@ -75,6 +77,11 @@ export function CreateCoursePage() {
   const [sections, setSections] = useState([emptySection()]);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [videoUploads, setVideoUploads] = useState({});
+
+  const updateVideoUploadState = (lessonId, patch) => {
+    setVideoUploads((prev) => ({ ...prev, [lessonId]: { ...prev[lessonId], ...patch } }));
+  };
 
   const updateSection = (sectionId, patch) => {
     setSections((prev) => prev.map((section) => (section.id === sectionId ? { ...section, ...patch } : section)));
@@ -97,6 +104,42 @@ export function CreateCoursePage() {
   const removeLesson = (sectionId, lessonId) => setSections((prev) => prev.map((section) => (
     section.id === sectionId ? { ...section, lessons: section.lessons.filter((lesson) => lesson.id !== lessonId) } : section
   )));
+
+  const handleVideoUpload = async (sectionId, lessonId, file) => {
+    updateVideoUploadState(lessonId, { uploading: true, progress: 0, error: null });
+
+    const { data, error: invokeError } = await supabase.functions.invoke('create-bunny-upload', {
+      body: { title: file.name },
+    });
+    if (invokeError) {
+      updateVideoUploadState(lessonId, { uploading: false, error: 'Не удалось загрузить видео' });
+      return;
+    }
+
+    const upload = new tus.Upload(file, {
+      endpoint: 'https://video.bunnycdn.com/tusupload',
+      retryDelays: [0, 3000, 5000, 10000, 20000],
+      headers: {
+        AuthorizationSignature: data.signature,
+        AuthorizationExpire: data.expiration,
+        VideoId: data.videoGuid,
+        LibraryId: data.libraryId,
+      },
+      metadata: { filetype: file.type, title: file.name },
+      onError: () => {
+        updateVideoUploadState(lessonId, { uploading: false, error: 'Не удалось загрузить видео' });
+      },
+      onProgress: (sent, total) => {
+        updateVideoUploadState(lessonId, { progress: Math.round((sent / total) * 100) });
+      },
+      onSuccess: () => {
+        const embed = `https://iframe.mediadelivery.net/embed/${data.libraryId}/${data.videoGuid}`;
+        updateLesson(sectionId, lessonId, { videoUrl: embed });
+        updateVideoUploadState(lessonId, { uploading: false });
+      },
+    });
+    upload.start();
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -172,11 +215,35 @@ export function CreateCoursePage() {
                     <label><input type="radio" checked={lesson.type === 'video'} onChange={() => updateLesson(section.id, lesson.id, { type: 'video' })} /> {t('instructor.video')}</label>
                   </div>
                   {lesson.type === 'video' && (
-                    <input
-                      placeholder={t('instructor.videoLinkPlaceholder')}
-                      value={lesson.videoUrl}
-                      onChange={(event) => updateLesson(section.id, lesson.id, { videoUrl: event.target.value })}
-                    />
+                    <>
+                      <div className="video-upload">
+                        <input
+                          type="file"
+                          accept="video/*"
+                          disabled={videoUploads[lesson.id]?.uploading}
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            if (file) handleVideoUpload(section.id, lesson.id, file);
+                            event.target.value = '';
+                          }}
+                        />
+                        {videoUploads[lesson.id]?.uploading && (
+                          <div className="progress">
+                            <div className="progress__bar" style={{ width: `${videoUploads[lesson.id]?.progress ?? 0}%` }} />
+                          </div>
+                        )}
+                        {videoUploads[lesson.id]?.uploading && <span>Загрузка… {videoUploads[lesson.id]?.progress ?? 0}%</span>}
+                        {videoUploads[lesson.id] && !videoUploads[lesson.id].uploading && !videoUploads[lesson.id].error && lesson.videoUrl && (
+                          <span>Готово</span>
+                        )}
+                        {videoUploads[lesson.id]?.error && <span style={{ color: '#c0392b' }}>{videoUploads[lesson.id].error}</span>}
+                      </div>
+                      <input
+                        placeholder={t('instructor.videoLinkPlaceholder')}
+                        value={lesson.videoUrl}
+                        onChange={(event) => updateLesson(section.id, lesson.id, { videoUrl: event.target.value })}
+                      />
+                    </>
                   )}
                   <textarea
                     rows="2"
