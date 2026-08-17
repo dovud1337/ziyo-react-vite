@@ -118,6 +118,12 @@ export default function CoursePage() {
   const lessons = getLessons(course);
   const alreadyReviewed = user && course.reviews.some((review) => review.author === user.name);
 
+  const handleEnroll = () => {
+    if (!user) { navigate('/login', { state: { from: `/courses/${course.id}` } }); return; }
+    addToCart(course.id);
+    navigate('/cart');
+  };
+
   return (
     <>
       <SeoHead title={course.title} description={course.description} />
@@ -149,7 +155,7 @@ export default function CoursePage() {
           ) : isInCart ? (
             <Button variant="secondary" onClick={() => navigate('/cart')}>{t('course.inCartGoTo')}</Button>
           ) : (
-            <Button onClick={() => { addToCart(course.id); navigate('/cart'); }}>{t('course.enroll')}</Button>
+            <Button onClick={handleEnroll}>{t('course.enroll')}</Button>
           )}
         </aside>
       </section>

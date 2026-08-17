@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
@@ -9,6 +9,7 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 
 export default function AuthPage({ mode }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, register } = useApp((state) => ({ login: state.login, register: state.register }));
   const { t } = useLanguage();
   const [name, setName] = useState('');
@@ -38,7 +39,7 @@ export default function AuthPage({ mode }) {
       } else {
         await register(name, email, password);
       }
-      navigate('/student');
+      navigate(location.state?.from ?? '/student');
     } catch (err) {
       setError(err.message ?? t('auth.genericError'));
     } finally {
