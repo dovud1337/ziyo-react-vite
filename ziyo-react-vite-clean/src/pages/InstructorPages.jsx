@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as tus from 'tus-js-client';
 import PageHeader from '../components/PageHeader.jsx';
@@ -78,6 +78,14 @@ export function CreateCoursePage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [videoUploads, setVideoUploads] = useState({});
+  const videoUploadsRef = useRef(videoUploads);
+  videoUploadsRef.current = videoUploads;
+
+  useEffect(() => () => {
+    Object.values(videoUploadsRef.current).forEach((upload) => {
+      if (upload?.previewUrl) URL.revokeObjectURL(upload.previewUrl);
+    });
+  }, []);
 
   const updateVideoUploadState = (lessonId, patch) => {
     setVideoUploads((prev) => ({ ...prev, [lessonId]: { ...prev[lessonId], ...patch } }));
@@ -106,7 +114,10 @@ export function CreateCoursePage() {
   )));
 
   const handleVideoUpload = async (sectionId, lessonId, file) => {
-    updateVideoUploadState(lessonId, { uploading: true, progress: 0, error: null });
+    const previewUrl = URL.createObjectURL(file);
+    const oldPreviewUrl = videoUploadsRef.current[lessonId]?.previewUrl;
+    if (oldPreviewUrl) URL.revokeObjectURL(oldPreviewUrl);
+    updateVideoUploadState(lessonId, { uploading: true, progress: 0, error: null, previewUrl });
 
     const { data, error: invokeError } = await supabase.functions.invoke('create-bunny-upload', {
       body: { title: file.name },
@@ -237,6 +248,13 @@ export function CreateCoursePage() {
                           <span>Готово</span>
                         )}
                         {videoUploads[lesson.id]?.error && <span style={{ color: '#c0392b' }}>{videoUploads[lesson.id].error}</span>}
+                        {videoUploads[lesson.id]?.previewUrl && (
+                          <video
+                            src={videoUploads[lesson.id].previewUrl}
+                            controls
+                            style={{ display: 'block', maxWidth: '100%', maxHeight: 220, marginTop: 8, borderRadius: 8 }}
+                          />
+                        )}
                       </div>
                       <input
                         placeholder={t('instructor.videoLinkPlaceholder')}
