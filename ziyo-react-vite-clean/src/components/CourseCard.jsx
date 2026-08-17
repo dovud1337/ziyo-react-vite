@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
@@ -14,6 +15,7 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
   const rating = getAverageRating(course);
   const reviewCount = getReviewCount(course);
   const cover = getCourseThumbnail(course);
+  const [coverLoaded, setCoverLoaded] = useState(false);
 
   const handleWishlistClick = (event) => {
     event.preventDefault();
@@ -23,10 +25,25 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
 
   return (
     <Link to={`/courses/${course.id}`} className="course-card">
-      <div
-        className={`course-card__preview preview--${course.tone}`}
-        style={cover ? { backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
-      >
+      <div className={`course-card__preview preview--${course.tone}`}>
+        {cover && (
+          <img
+            src={cover}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onLoad={() => setCoverLoaded(true)}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              opacity: coverLoaded ? 1 : 0,
+              transition: 'opacity .3s ease',
+            }}
+          />
+        )}
         <span className="course-card__badge">{getLessonCount(course)} {t('common.lessonsWord')}</span>
         <span className="course-card__duration">{translateLevel(course.level)}</span>
         <button

@@ -103,6 +103,7 @@ export default function CoursePage() {
   }));
   const { t, translateCategory, translateLevel, dateLocale } = useLanguage();
   const course = courses.find((item) => item.id === Number(courseId));
+  const [coverLoaded, setCoverLoaded] = useState(false);
 
   useEffect(() => {
     fetchCourseDetail(Number(courseId));
@@ -142,10 +143,26 @@ export default function CoursePage() {
           </div>
         </div>
         <aside className="purchase-card">
-          <div
-            className={`purchase-card__preview preview--${course.tone}`}
-            style={cover ? { backgroundImage: `url(${cover})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
-          />
+          <div className={`purchase-card__preview preview--${course.tone}`} style={{ position: 'relative' }}>
+            {cover && (
+              <img
+                src={cover}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                onLoad={() => setCoverLoaded(true)}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  opacity: coverLoaded ? 1 : 0,
+                  transition: 'opacity .3s ease',
+                }}
+              />
+            )}
+          </div>
           <strong>
             {hasDiscount(course) && <span className="price-original">{course.price} TJS</span>}
             {getEffectivePrice(course)} TJS
