@@ -103,12 +103,12 @@ button { cursor: pointer; }
 .section__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .section__header h2 { margin: 0; font-size: 24px; }
 .course-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
-.course-card { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; transition: transform .15s ease, box-shadow .15s ease; }
-.course-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px var(--shadow); }
+.course-card { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.course-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .5); border-color: var(--muted); }
 .course-card__preview { height: 148px; position: relative; padding: 10px; }
 .course-card__badge, .course-card__duration, .course-card__wishlist { position: absolute; background: var(--surface-translucent); padding: 4px 7px; border-radius: 5px; font-size: 11px; font-weight: 800; }
 .course-card__badge { top: 10px; left: 10px; }
-.course-card__duration { right: 10px; bottom: 10px; }
+.course-card__duration { right: 10px; bottom: 10px; background: rgba(20, 22, 18, .55); color: var(--gold); border: 1px solid rgba(228, 185, 91, .4); }
 .course-card__wishlist { top: 10px; right: 10px; border: 0; cursor: pointer; font-size: 15px; line-height: 1; color: #c0392b; }
 .course-card__wishlist.active { background: #c0392b; color: #fff; }
 .course-card__content { padding: 12px; }
@@ -162,10 +162,11 @@ input, select, textarea { border: 1px solid var(--line); border-radius: 8px; pad
 .auth-card { width: min(420px, 100%); display: grid; gap: 14px; }
 .auth-card h1 { margin: 0; }
 .star-rating { color: var(--star-empty); letter-spacing: 2px; }
-.star-rating .star--filled { color: #d6a021; }
+.star-rating .star--filled { color: var(--gold); }
 .star-rating--interactive .star { cursor: pointer; font-size: 22px; }
 .level-badge { display: inline-block; padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--muted); font-size: 11px; font-weight: 800; }
 .price-original { color: var(--muted); text-decoration: line-through; font-weight: 600; margin-right: 6px; }
+.course-card__price { color: var(--gold); font-weight: 700; }
 .filter-bar { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 16px; }
 .filter-field { display: grid; gap: 5px; font-size: 12px; color: var(--muted); font-weight: 700; }
 .filter-field input, .filter-field select { padding: 8px 10px; }

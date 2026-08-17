@@ -51,7 +51,7 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
         ) : (
           <strong>
             {hasDiscount(course) && <span className="price-original">{course.price} TJS</span>}
-            {getEffectivePrice(course)} TJS
+            <span className="course-card__price">{getEffectivePrice(course)} TJS</span>
           </strong>
         )}
       </div>
