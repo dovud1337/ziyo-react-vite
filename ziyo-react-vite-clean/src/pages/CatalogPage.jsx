@@ -9,8 +9,9 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 import { getAverageRating, getEffectivePrice, getLessonCount } from '../utils/courseHelpers.js';
 
 export default function CatalogPage() {
-  const { courses, coursesError, refreshCourses } = useApp((state) => ({
+  const { courses, coursesLoaded, coursesError, refreshCourses } = useApp((state) => ({
     courses: state.courses,
+    coursesLoaded: state.coursesLoaded,
     coursesError: state.coursesError,
     refreshCourses: state.refreshCourses,
   }));
@@ -71,6 +72,10 @@ export default function CatalogPage() {
     }
     return sorted;
   }, [courses, activeCategory, query, activeLevels, minPrice, maxPrice, minRating, sort]);
+
+  if (!coursesLoaded) {
+    return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
+  }
 
   if (coursesError && courses.length === 0) {
     return (

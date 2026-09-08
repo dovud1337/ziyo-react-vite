@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import PageHeader from '../components/PageHeader.jsx';
@@ -9,7 +10,7 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 function getInstructors(courses) {
   const byName = new Map();
   courses.forEach((course) => {
-    if (!byName.has(course.teacher)) byName.set(course.teacher, course);
+    if (!byName.has(course.teacherId)) byName.set(course.teacherId, course);
   });
   return [...byName.values()];
 }
@@ -32,7 +33,7 @@ export function InstructorsPage() {
       ) : (
         <div className="people-grid">
           {instructors.map((course) => (
-            <Link key={course.id} to={`/instructors/${course.id}`} className="person-card panel">
+            <Link key={course.teacherId} to={`/instructors/${course.teacherId}`} className="person-card panel">
               <div className={`person-card__avatar preview--${course.tone}`}>{course.teacher[0]}</div>
               <h3>{course.teacher}</h3><p>{course.category}</p>
             </Link>
@@ -45,12 +46,17 @@ export function InstructorsPage() {
 
 export function InstructorProfilePage() {
   const { instructorId } = useParams();
-  const { courses, subscribedInstructorIds, toggleSubscribe } = useApp((state) => ({
-    courses: state.courses, subscribedInstructorIds: state.subscribedInstructorIds, toggleSubscribe: state.toggleSubscribe,
+  const { courses, coursesLoaded, user, subscribedInstructorIds, toggleSubscribe } = useApp((state) => ({
+    courses: state.courses, coursesLoaded: state.coursesLoaded, user: state.user, subscribedInstructorIds: state.subscribedInstructorIds, toggleSubscribe: state.toggleSubscribe,
   }));
   const { t } = useLanguage();
-  const id = Number(instructorId);
-  const anchorCourse = courses.find((course) => course.id === id);
+  const navigate = useNavigate();
+  const [error, setError] = useState('');
+  const [pending, setPending] = useState(false);
+  const anchorCourse = courses.find((course) => course.teacherId === instructorId)
+    ?? courses.find((course) => course.id === Number(instructorId));
+
+  if (!coursesLoaded) return <div className="panel empty-state">{t('common.loading')}</div>;
 
   if (!anchorCourse) {
     return (
@@ -61,8 +67,17 @@ export function InstructorProfilePage() {
     );
   }
 
-  const teacherCourses = courses.filter((course) => course.teacher === anchorCourse.teacher);
+  const id = anchorCourse.teacherId;
+  const teacherCourses = courses.filter((course) => course.teacherId === id);
   const subscribed = subscribedInstructorIds.includes(id);
+  const handleSubscribe = async () => {
+    if (!user) { navigate('/login', { state: { from: `/instructors/${id}` } }); return; }
+    setPending(true);
+    setError('');
+    try { await toggleSubscribe(id); }
+    catch (err) { setError(err.message ?? t('auth.genericError')); }
+    finally { setPending(false); }
+  };
 
   return (
     <>
@@ -70,7 +85,8 @@ export function InstructorProfilePage() {
       <section className="profile-hero panel">
         <div className={`person-card__avatar preview--${anchorCourse.tone}`}>{anchorCourse.teacher[0]}</div>
         <div><span className="eyebrow">{t('publicPages.instructorEyebrow')}</span><h1>{anchorCourse.teacher}</h1><p>{t('publicPages.coursesOnPlatform', { count: teacherCourses.length })}</p></div>
-        <Button variant={subscribed ? 'secondary' : 'primary'} onClick={() => toggleSubscribe(id)}>{subscribed ? t('publicPages.subscribed') : t('publicPages.subscribe')}</Button>
+        <Button disabled={pending} variant={subscribed ? 'secondary' : 'primary'} onClick={handleSubscribe}>{subscribed ? t('publicPages.subscribed') : t('publicPages.subscribe')}</Button>
+        {error && <p role="alert">{error}</p>}
       </section>
       <section className="section"><div className="section__header"><h2>{t('publicPages.instructorCoursesTitle')}</h2></div><CourseGrid courses={teacherCourses} /></section>
     </>

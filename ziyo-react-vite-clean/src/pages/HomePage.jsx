@@ -7,9 +7,10 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 import { getLessonCount } from '../utils/courseHelpers.js';
 
 export default function HomePage() {
-  const { courses, enrollments, coursesError, refreshCourses } = useApp((state) => ({
+  const { courses, enrollments, coursesLoaded, coursesError, refreshCourses } = useApp((state) => ({
     courses: state.courses,
     enrollments: state.enrollments,
+    coursesLoaded: state.coursesLoaded,
     coursesError: state.coursesError,
     refreshCourses: state.refreshCourses,
   }));
@@ -18,6 +19,10 @@ export default function HomePage() {
   const activeCourses = courses.filter((course) => enrolledIds.includes(course.id));
   const teacherCount = new Set(courses.map((course) => course.teacher)).size;
   const lessonCount = courses.reduce((sum, course) => sum + getLessonCount(course), 0);
+
+  if (!coursesLoaded) {
+    return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
+  }
 
   if (coursesError && courses.length === 0) {
     return (

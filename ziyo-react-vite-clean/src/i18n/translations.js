@@ -36,6 +36,7 @@ export const translations = {
       lessonsWord: 'уроков', noReviews: 'Нет отзывов', reviewsSuffix: 'отзывов',
       createCourse: 'Создать курс', goToCatalog: 'Перейти в каталог', print: 'Печать',
       loading: 'Загрузка…', loadErrorTitle: 'Не удалось загрузить курсы', retry: 'Повторить',
+      setupTitle: 'Нужна настройка', setupDescription: 'Добавьте VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY в файл .env, затем перезапустите сайт.',
       siteDescription: 'ZIYO — онлайн-обучение для Центральной Азии и СНГ',
     },
     nav: {
@@ -100,7 +101,7 @@ export const translations = {
       goToMyCourses: 'Перейти к моим курсам',
     },
     auth: {
-      login: 'Войти', createAccount: 'Создать аккаунт', restorePassword: 'Восстановить пароль',
+      login: 'Войти', createAccount: 'Создать аккаунт', restorePassword: 'Восстановить пароль', newPassword: 'Новый пароль',
       noAccount: 'Нет аккаунта?', alreadyHaveAccount: 'Уже есть аккаунт?', rememberedPassword: 'Вспомнили пароль?',
       signUp: 'Зарегистрироваться', name: 'Имя', email: 'Email', password: 'Пароль', continueBtn: 'Продолжить',
       pleaseWait: 'Подождите…', resetInstructionsSent: 'Инструкции по восстановлению пароля отправлены на {{email}}.',
@@ -213,6 +214,7 @@ export const translations = {
       lessonsWord: 'дарс', noReviews: 'Тақриз нест', reviewsSuffix: 'тақриз',
       createCourse: 'Курс сохтан', goToCatalog: 'Ба каталог гузаштан', print: 'Чоп',
       loading: 'Бор карда истодааст…', loadErrorTitle: 'Курсҳо бор нашуданд', retry: 'Такрор кардан',
+      setupTitle: 'Танзим лозим аст', setupDescription: 'VITE_SUPABASE_URL ва VITE_SUPABASE_ANON_KEY-ро ба файли .env илова кунед, сипас сомонаро аз нав оғоз кунед.',
       siteDescription: 'ZIYO — таълими онлайн барои Осиёи Марказӣ ва ИДМ',
     },
     nav: {
@@ -277,7 +279,7 @@ export const translations = {
       goToMyCourses: 'Ба курсҳои ман гузаштан',
     },
     auth: {
-      login: 'Ворид шудан', createAccount: 'Ҳисоб сохтан', restorePassword: 'Барқарор кардани парол',
+      login: 'Ворид шудан', createAccount: 'Ҳисоб сохтан', restorePassword: 'Барқарор кардани парол', newPassword: 'Пароли нав',
       noAccount: 'Ҳисоб надоред?', alreadyHaveAccount: 'Аллакай ҳисоб доред?', rememberedPassword: 'Паролро дар хотир доред?',
       signUp: 'Бақайдгирӣ кардан', name: 'Ном', email: 'Email', password: 'Парол', continueBtn: 'Идома додан',
       pleaseWait: 'Лутфан сабр кунед…', resetInstructionsSent: 'Дастурҳои барқарорсозии парол ба {{email}} фиристода шуданд.',
@@ -390,6 +392,7 @@ export const translations = {
       lessonsWord: 'lessons', noReviews: 'No reviews', reviewsSuffix: 'reviews',
       createCourse: 'Create a course', goToCatalog: 'Go to catalog', print: 'Print',
       loading: 'Loading…', loadErrorTitle: 'Could not load courses', retry: 'Retry',
+      setupTitle: 'Setup required', setupDescription: 'Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file, then restart the site.',
       siteDescription: 'ZIYO — online learning for Central Asia and the CIS',
     },
     nav: {
@@ -454,7 +457,7 @@ export const translations = {
       goToMyCourses: 'Go to my courses',
     },
     auth: {
-      login: 'Log in', createAccount: 'Create account', restorePassword: 'Reset password',
+      login: 'Log in', createAccount: 'Create account', restorePassword: 'Reset password', newPassword: 'New password',
       noAccount: "Don't have an account?", alreadyHaveAccount: 'Already have an account?',
       rememberedPassword: 'Remembered your password?', signUp: 'Sign up', name: 'Name', email: 'Email',
       password: 'Password', continueBtn: 'Continue', pleaseWait: 'Please wait…',

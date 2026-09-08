@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
+import useCourseDetail from '../hooks/useCourseDetail.js';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import PageHeader from '../components/PageHeader.jsx';
@@ -133,9 +134,12 @@ export function LessonPage() {
   const course = courses.find((item) => item.id === Number(courseId));
   const enrollment = enrollments[Number(courseId)];
 
-  useEffect(() => {
-    fetchCourseDetail(Number(courseId));
-  }, [courseId, fetchCourseDetail]);
+  const { loading, error, retry } = useCourseDetail(courseId);
+  const [saveError, setSaveError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  if (error) return <div className="panel empty-state" role="alert"><h2>{t('common.loadErrorTitle')}</h2><p>{error.message}</p><Button onClick={retry}>{t('common.retry')}</Button></div>;
+  if (loading) return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
 
   if (!course) return coursesLoaded ? <Navigate to="/student/courses" replace /> : null;
   if (!isCourseDetailLoaded(course)) return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
@@ -145,9 +149,7 @@ export function LessonPage() {
   const activeIndex = lessons.findIndex((lesson) => lesson.id === activeId);
   const lesson = activeIndex >= 0 ? lessons[activeIndex] : lessons[0];
   const completed = enrollment?.completedLessonIds.includes(lesson?.id) ?? false;
-  const progress = enrollment && lessons.length > 0
-    ? Math.round((enrollment.completedLessonIds.length / lessons.length) * 100)
-    : 0;
+  const progress = getCourseProgress(course, enrollment);
   const prevLesson = activeIndex > 0 ? lessons[activeIndex - 1] : null;
   const nextLesson = activeIndex >= 0 && activeIndex < lessons.length - 1 ? lessons[activeIndex + 1] : null;
 
@@ -159,6 +161,8 @@ export function LessonPage() {
       </div>
     );
   }
+
+  if (activeIndex < 0) return <Navigate to={`/student/lesson/${course.id}/${lessons[0].id}`} replace />;
 
   return (
     <div className="lesson-layout">
@@ -181,10 +185,17 @@ export function LessonPage() {
         <div className="progress"><div className="progress__bar" style={{ width: `${progress}%` }} /></div>
         <Button
           variant={completed ? 'secondary' : 'primary'}
-          onClick={() => toggleLessonComplete(course.id, lesson.id)}
+          disabled={saving || !enrollment}
+          onClick={async () => {
+            setSaving(true); setSaveError('');
+            try { await toggleLessonComplete(course.id, lesson.id); }
+            catch (err) { setSaveError(err.message ?? t('auth.genericError')); }
+            finally { setSaving(false); }
+          }}
         >
           {completed ? t('student.lessonCompleted') : t('student.markComplete')}
         </Button>
+        {saveError && <p role="alert">{saveError}</p>}
         {progress === 100 && (
           <div className="panel" style={{ marginTop: 12 }}>
             <strong>{t('student.courseCompleted')}</strong>

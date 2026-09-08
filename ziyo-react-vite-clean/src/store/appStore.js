@@ -7,6 +7,7 @@ function mapCourseCardRow(row) {
   return {
     id: row.id,
     teacher: row.teacher_name,
+    teacherId: row.teacher_id,
     category: row.category,
     level: row.level,
     price: Number(row.price),
@@ -25,6 +26,7 @@ function mapCourseDetailRow(row) {
     id: row.id,
     title: row.title,
     teacher: row.teacher_name,
+    teacherId: row.teacher_id,
     category: row.category,
     level: row.level,
     price: Number(row.price),
@@ -50,6 +52,7 @@ function mapCourseDetailRow(row) {
       .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
       .map((review) => ({
         id: review.id,
+        authorId: review.author_id,
         author: review.author_name,
         rating: review.rating,
         text: review.text,
@@ -171,9 +174,23 @@ export const useAppStore = create((set, get) => ({
   userDataLoaded: true,
 
   init: () => {
-    get().refreshCourses();
-    supabase.auth.getSession().then(({ data }) => applySession(set, data.session));
-    supabase.auth.onAuthStateChange((_event, session) => { applySession(set, session); });
+    if (!supabase) return;
+    get().refreshCourses().catch(() => {});
+    let version = 0;
+    const syncSession = async (session) => {
+      const current = ++version;
+      const guardedSet = (next) => { if (current === version) set(next); };
+      try { await applySession(guardedSet, session); }
+      catch { guardedSet({ userDataLoaded: true }); }
+    };
+    supabase.auth.getSession().then(({ data }) => {
+      if (version === 0) syncSession(data.session);
+    }).catch(() => set({ userDataLoaded: true }));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Run database requests after the auth callback releases its lock.
+      setTimeout(() => syncSession(session), 0);
+    });
+    return () => { version++; subscription.unsubscribe(); };
   },
 
   refreshCourses: async () => {
@@ -194,7 +211,20 @@ export const useAppStore = create((set, get) => ({
   },
 
   login: async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    await applySession(set, data.session);
+  },
+
+  resetPassword: async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
+  },
+
+  updatePassword: async (password) => {
+    const { error } = await supabase.auth.updateUser({ password });
     if (error) throw error;
   },
 
@@ -215,6 +245,7 @@ export const useAppStore = create((set, get) => ({
   logout: async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    await applySession(set, null);
   },
 
   addToCart: async (id) => {
@@ -407,10 +438,8 @@ export const useAppStore = create((set, get) => ({
   },
 }));
 
-if (!globalThis.__ziyoAppStoreInitialized) {
-  globalThis.__ziyoAppStoreInitialized = true;
-  useAppStore.getState().init();
-}
+const dispose = useAppStore.getState().init();
+if (import.meta.hot) import.meta.hot.dispose(() => dispose?.());
 
 export function useApp(selector) {
   return useAppStore(useShallow(selector));

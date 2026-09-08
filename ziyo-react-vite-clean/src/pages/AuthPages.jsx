@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
@@ -10,7 +10,9 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 export default function AuthPage({ mode }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, register } = useApp((state) => ({ login: state.login, register: state.register }));
+  const { login, register, resetPassword, updatePassword } = useApp((state) => ({
+    login: state.login, register: state.register, resetPassword: state.resetPassword, updatePassword: state.updatePassword,
+  }));
   const { t } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,22 +21,27 @@ export default function AuthPage({ mode }) {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => { setSent(false); setError(''); setPassword(''); }, [mode]);
+
   const content = {
     login: [t('auth.login'), t('auth.noAccount'), '/register', t('auth.signUp')],
     register: [t('auth.createAccount'), t('auth.alreadyHaveAccount'), '/login', t('auth.login')],
     forgot: [t('auth.restorePassword'), t('auth.rememberedPassword'), '/login', t('auth.login')],
+    reset: [t('auth.newPassword'), t('auth.rememberedPassword'), '/login', t('auth.login')],
   }[mode];
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
-    if (mode === 'forgot') {
-      setSent(true);
-      return;
-    }
     setSubmitting(true);
     try {
-      if (mode === 'login') {
+      if (mode === 'forgot') {
+        await resetPassword(email);
+        setSent(true);
+        return;
+      } else if (mode === 'reset') {
+        await updatePassword(password);
+      } else if (mode === 'login') {
         await login(email, password);
       } else {
         await register(name, email, password);
@@ -61,15 +68,16 @@ export default function AuthPage({ mode }) {
             {mode === 'register' && (
               <label>{t('auth.name')}<input required value={name} onChange={(event) => setName(event.target.value)} /></label>
             )}
-            <label>{t('auth.email')}<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+            {mode !== 'reset' && <label>{t('auth.email')}<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} /></label>}
             {mode !== 'forgot' && (
-              <label>{t('auth.password')}<input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+              <label>{t('auth.password')}<input required type="password" minLength={mode === 'login' ? undefined : 6} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
             )}
             {error && <p style={{ color: '#c0392b' }}>{error}</p>}
             <Button type="submit" disabled={submitting}>{submitting ? t('auth.pleaseWait') : t('auth.continueBtn')}</Button>
           </>
         )}
         <p>{content[1]} <Link to={content[2]}>{content[3]}</Link></p>
+        {mode === 'login' && <Link to="/forgot-password">{t('auth.restorePassword')}</Link>}
       </form>
     </div>
   );

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout.jsx';
 import { useLanguage } from './context/LanguageContext.jsx';
+import { supabase } from './lib/supabaseClient.js';
 
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const CatalogPage = lazy(() => import('./pages/CatalogPage.jsx'));
@@ -35,6 +36,12 @@ const AdminListPage = lazy(() => import('./pages/AdminPages.jsx').then((m) => ({
 
 export default function App() {
   const { t } = useLanguage();
+
+  if (!supabase) return (
+    <main className="auth-page"><div className="auth-card panel" role="alert">
+      <h1>ZIYO</h1><h2>{t('common.setupTitle')}</h2><p>{t('common.setupDescription')}</p>
+    </div></main>
+  );
 
   const studentSimplePages = [
     ['calendar', t('pages.studentCalendarTitle'), t('pages.studentCalendarDescription')],
@@ -107,6 +114,7 @@ export default function App() {
           <Route path="/login" element={<AuthPage mode="login" />} />
           <Route path="/register" element={<AuthPage mode="register" />} />
           <Route path="/forgot-password" element={<AuthPage mode="forgot" />} />
+          <Route path="/reset-password" element={<AuthPage mode="reset" />} />
         </Routes>
     </Suspense>
   );

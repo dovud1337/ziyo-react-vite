@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useCourseDetail from '../hooks/useCourseDetail.js';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import CourseGrid from '../components/CourseGrid.jsx';
@@ -105,9 +106,12 @@ export default function CoursePage() {
   const course = courses.find((item) => item.id === Number(courseId));
   const [coverLoaded, setCoverLoaded] = useState(false);
 
-  useEffect(() => {
-    fetchCourseDetail(Number(courseId));
-  }, [courseId, fetchCourseDetail]);
+  const { loading, error, retry } = useCourseDetail(courseId);
+  const [enrollError, setEnrollError] = useState('');
+  const [enrolling, setEnrolling] = useState(false);
+
+  if (error) return <div className="panel empty-state" role="alert"><h2>{t('common.loadErrorTitle')}</h2><p>{error.message}</p><Button onClick={retry}>{t('common.retry')}</Button></div>;
+  if (loading) return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
 
   if (!course) return coursesLoaded ? <Navigate to="/catalog" replace /> : null;
   if (!isCourseDetailLoaded(course)) return <div className="panel empty-state"><h2>{t('common.loading')}</h2></div>;
@@ -118,12 +122,15 @@ export default function CoursePage() {
   const reviewCount = getReviewCount(course);
   const lessons = getLessons(course);
   const cover = getCourseThumbnail(course);
-  const alreadyReviewed = user && course.reviews.some((review) => review.author === user.name);
+  const alreadyReviewed = user && course.reviews.some((review) => review.authorId === user.id);
 
-  const handleEnroll = () => {
+  const handleEnroll = async () => {
     if (!user) { navigate('/login', { state: { from: `/courses/${course.id}` } }); return; }
-    addToCart(course.id);
-    navigate('/cart');
+    setEnrolling(true);
+    setEnrollError('');
+    try { await addToCart(course.id); navigate('/cart'); }
+    catch (err) { setEnrollError(err.message ?? t('auth.genericError')); }
+    finally { setEnrolling(false); }
   };
 
   return (
@@ -176,8 +183,9 @@ export default function CoursePage() {
           ) : isInCart ? (
             <Button variant="secondary" onClick={() => navigate('/cart')}>{t('course.inCartGoTo')}</Button>
           ) : (
-            <Button onClick={handleEnroll}>{t('course.enroll')}</Button>
+            <Button disabled={enrolling} onClick={handleEnroll}>{t('course.enroll')}</Button>
           )}
+          {enrollError && <p role="alert">{enrollError}</p>}
         </aside>
       </section>
 

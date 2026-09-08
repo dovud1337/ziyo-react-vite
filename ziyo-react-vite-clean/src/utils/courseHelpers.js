@@ -49,6 +49,9 @@ export function getCourseThumbnail(course) {
 export function getCourseProgress(course, enrollment) {
   const total = getLessonCount(course);
   if (!enrollment || total === 0) return 0;
-  const completed = enrollment.completedLessonIds.length;
+  const completedIds = new Set(enrollment.completedLessonIds ?? []);
+  const completed = Array.isArray(course.sections)
+    ? getLessons(course).filter((lesson) => completedIds.has(lesson.id)).length
+    : Math.min(completedIds.size, total);
   return Math.round((completed / total) * 100);
 }

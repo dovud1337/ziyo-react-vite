@@ -5,8 +5,12 @@ const STORAGE_KEY = 'ziyo_language';
 const LanguageContext = createContext(null);
 
 function getInitialLanguage() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (languages.includes(stored)) return stored;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (languages.includes(stored)) return stored;
+  } catch {
+    // Storage can be unavailable in private/restricted browser contexts.
+  }
   return 'ru';
 }
 
@@ -28,7 +32,9 @@ export function LanguageProvider({ children }) {
 
   const setLanguage = (next) => {
     if (!languages.includes(next)) return;
-    localStorage.setItem(STORAGE_KEY, next);
+    try { localStorage.setItem(STORAGE_KEY, next); } catch {
+      // The language switch should still work for the current session.
+    }
     setLanguageState(next);
   };
 
