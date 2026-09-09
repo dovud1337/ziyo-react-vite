@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
 import StarRating from './StarRating.jsx';
+import CategoryIcon, { getCategoryToneKey } from './icons/CategoryIcon.jsx';
 import { getAverageRating, getCourseThumbnail, getEffectivePrice, getLessonCount, getReviewCount, hasDiscount } from '../utils/courseHelpers.js';
 
 export default function CourseCard({ course, showProgress = false, progress = 0 }) {
@@ -25,8 +26,8 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
 
   return (
     <Link to={`/courses/${course.id}`} className="course-card">
-      <div className={`course-card__preview preview--${course.tone}`}>
-        {!cover && <div className="course-card__art" aria-hidden="true"><span>{({ 'Программирование': '</>', 'Дизайн': 'Aa', 'Языки': 'Aa', 'AI': '✳', 'Аналитика': '▥' })[course.category] ?? '↗'}</span><i /></div>}
+      <div className={`course-card__preview ${!cover ? `category-tile--${getCategoryToneKey(course.category)}` : ''}`}>
+        {!cover && <CategoryIcon category={course.category} />}
         {cover && (
           <img
             src={cover}
@@ -53,7 +54,9 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
           onClick={handleWishlistClick}
           aria-label={saved ? t('courseCard.removeFromWishlist') : t('courseCard.addToWishlist')}
         >
-          {saved ? '♥' : '♡'}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? 'oklch(62% 0.19 20)' : 'none'} stroke={saved ? 'oklch(62% 0.19 20)' : 'var(--ink-faint)'} strokeWidth="1.7">
+            <path d="M12 20s-7-4.3-9.5-8.4C.6 8.1 2 4.6 5.5 4.6c2 0 3.3 1.1 4 2.2.7-1.1 2-2.2 4-2.2 3.5 0 4.9 3.5 3 7C19 15.7 12 20 12 20z" />
+          </svg>
         </button>
       </div>
       <div className="course-card__content">

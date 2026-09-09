@@ -107,41 +107,55 @@ export default function CatalogPage() {
         ))}
       </div>
 
-      <div className="filter-bar">
-        <div className="filter-field filter-field--checks">
-          {levels.map((level) => (
-            <label key={level}>
-              <input type="checkbox" checked={activeLevels.includes(level)} onChange={() => toggleLevel(level)} />
-              {translateLevel(level)}
-            </label>
-          ))}
-        </div>
-        <label className="filter-field">{t('catalog.priceFrom')}<input type="number" min="0" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} /></label>
-        <label className="filter-field">{t('catalog.priceTo')}<input type="number" min="0" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} /></label>
-        <label className="filter-field">{t('catalog.ratingFrom')}
-          <select value={minRating} onChange={(event) => setMinRating(event.target.value)}>
-            <option value="0">{t('catalog.ratingAny')}</option>
-            <option value="3">3+</option>
-            <option value="4">4+</option>
-            <option value="4.5">4.5+</option>
-          </select>
-        </label>
-        <label className="filter-field">{t('catalog.sortLabel')}
-          <select value={sort} onChange={(event) => setSort(event.target.value)}>
-            {SORTS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </select>
-        </label>
-      </div>
+      <div className="catalog-layout">
+        <aside className="catalog-sidebar">
+          <div className="filter-group">
+            <h3>{t('catalog.levelHeading')}</h3>
+            {levels.map((level) => (
+              <label key={level}>
+                <input type="checkbox" checked={activeLevels.includes(level)} onChange={() => toggleLevel(level)} />
+                {translateLevel(level)}
+              </label>
+            ))}
+          </div>
+          <div className="filter-group">
+            <h3>{t('catalog.priceHeading')}</h3>
+            <div className="filter-range">
+              <input type="number" min="0" placeholder={t('catalog.priceFrom')} value={minPrice} onChange={(event) => setMinPrice(event.target.value)} />
+              <input type="number" min="0" placeholder={t('catalog.priceTo')} value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} />
+            </div>
+          </div>
+          <div className="filter-group">
+            <h3>{t('catalog.ratingHeading')}</h3>
+            <select value={minRating} onChange={(event) => setMinRating(event.target.value)}>
+              <option value="0">{t('catalog.ratingAny')}</option>
+              <option value="3">3+</option>
+              <option value="4">4+</option>
+              <option value="4.5">4.5+</option>
+            </select>
+          </div>
+        </aside>
 
-      {filteredCourses.length === 0 ? (
-        <div className="panel empty-state">
-          <h2>{courses.length === 0 ? t('home.noCourses') : t('catalog.nothingFound')}</h2>
-          <p>{courses.length === 0 ? t('home.beFirstInstructor') : t('catalog.tryDifferentFilters')}</p>
-          {courses.length === 0 && <Link className="button button--primary" to="/instructor/create">{t('common.createCourse')}</Link>}
+        <div>
+          <div className="catalog-toolbar" style={{ justifyContent: 'flex-end' }}>
+            <label className="filter-field">{t('catalog.sortLabel')}
+              <select value={sort} onChange={(event) => setSort(event.target.value)}>
+                {SORTS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+          </div>
+
+          {filteredCourses.length === 0 ? (
+            <div className="panel empty-state">
+              <h2>{courses.length === 0 ? t('home.noCourses') : t('catalog.nothingFound')}</h2>
+              <p>{courses.length === 0 ? t('home.beFirstInstructor') : t('catalog.tryDifferentFilters')}</p>
+              {courses.length === 0 && <Link className="button button--primary" to="/instructor/create">{t('common.createCourse')}</Link>}
+            </div>
+          ) : (
+            <CourseGrid courses={filteredCourses} />
+          )}
         </div>
-      ) : (
-        <CourseGrid courses={filteredCourses} />
-      )}
+      </div>
     </>
   );
 }

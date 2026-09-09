@@ -62,6 +62,9 @@ export const translations = {
       metricLessons: 'уроков', metricYourCourses: 'ваших курсов', nowOnPlatform: 'Сейчас на платформе',
       openCatalog: 'Открыть каталог →', noCourses: 'Курсов пока нет',
       beFirstInstructor: 'Станьте первым преподавателем на платформе.', continueLearning: 'Продолжить обучение',
+      instructorCtaTitle: 'Станьте преподавателем NOOR',
+      instructorCtaText: 'Делитесь опытом с тысячами студентов, стройте собственную программу и получайте доход от каждого курса.',
+      instructorCtaButton: 'Подать заявку',
     },
     catalog: {
       resultsFor: 'Результаты по «{{query}}»', coursesCount: '{{count}} курсов', title: 'Каталог',
@@ -70,6 +73,14 @@ export const translations = {
       sortPriceAsc: 'Сначала дешевле', sortPriceDesc: 'Сначала дороже', sortRating: 'По рейтингу',
       sortLessons: 'По количеству уроков', nothingFound: 'Ничего не найдено',
       tryDifferentFilters: 'Попробуйте изменить фильтры или запрос поиска.',
+      levelHeading: 'Уровень', priceHeading: 'Цена', ratingHeading: 'Рейтинг',
+    },
+    footer: {
+      tagline: 'Свет знаний — на вашем языке.',
+      platformHeading: 'Платформа', catalogLink: 'Каталог курсов', aboutLink: 'О нас', partnersLink: 'Партнёрам',
+      studentsHeading: 'Студентам', howItWorksLink: 'Как это работает', certificatesLink: 'Сертификаты', supportLink: 'Поддержка',
+      instructorsHeading: 'Преподавателям', becomeInstructorLink: 'Стать преподавателем', requirementsLink: 'Требования', resourcesLink: 'Ресурсы',
+      copyright: '© {{year}} NOOR. Все права защищены.',
     },
     course: {
       teacherLabel: 'Преподаватель: {{name}}', alreadyEnrolled: 'Вы записаны ✓',
@@ -240,6 +251,9 @@ export const translations = {
       metricLessons: 'дарс', metricYourCourses: 'курсҳои шумо', nowOnPlatform: 'Ҳоло дар платформа',
       openCatalog: 'Каталогро кушодан →', noCourses: 'Ҳанӯз курсе нест',
       beFirstInstructor: 'Аввалин омӯзгори платформа шавед.', continueLearning: 'Идомаи таълим',
+      instructorCtaTitle: 'Омӯзгори NOOR шавед',
+      instructorCtaText: 'Таҷрибаи худро бо ҳазорон донишҷӯ мубодила кунед, барномаи худро созед ва аз ҳар курс даромад гиред.',
+      instructorCtaButton: 'Дархост фиристодан',
     },
     catalog: {
       resultsFor: 'Натиҷаҳо барои «{{query}}»', coursesCount: '{{count}} курс', title: 'Каталог',
@@ -248,6 +262,14 @@ export const translations = {
       sortPriceAsc: 'Аввал арзонтарин', sortPriceDesc: 'Аввал қиматтарин', sortRating: 'Аз рӯи рейтинг',
       sortLessons: 'Аз рӯи шумораи дарсҳо', nothingFound: 'Ҳеҷ чиз ёфт нашуд',
       tryDifferentFilters: 'Филтрҳо ё дархости ҷустуҷӯро тағир диҳед.',
+      levelHeading: 'Дараҷа', priceHeading: 'Нарх', ratingHeading: 'Рейтинг',
+    },
+    footer: {
+      tagline: 'Нури дониш — бо забони шумо.',
+      platformHeading: 'Платформа', catalogLink: 'Каталоги курсҳо', aboutLink: 'Дар бораи мо', partnersLink: 'Ҳамкорон',
+      studentsHeading: 'Донишҷӯён', howItWorksLink: 'Чӣ гуна кор мекунад', certificatesLink: 'Сертификатҳо', supportLink: 'Дастгирӣ',
+      instructorsHeading: 'Омӯзгорон', becomeInstructorLink: 'Омӯзгор шудан', requirementsLink: 'Талабот', resourcesLink: 'Захираҳо',
+      copyright: '© {{year}} NOOR. Ҳама ҳуқуқҳо ҳифз шудаанд.',
     },
     course: {
       teacherLabel: 'Омӯзгор: {{name}}', alreadyEnrolled: 'Шумо сабт шудед ✓',
@@ -418,6 +440,9 @@ export const translations = {
       metricLessons: 'lessons', metricYourCourses: 'your courses', nowOnPlatform: 'Now on the platform',
       openCatalog: 'Open catalog →', noCourses: 'No courses yet',
       beFirstInstructor: 'Be the first instructor on the platform.', continueLearning: 'Continue learning',
+      instructorCtaTitle: 'Become a NOOR instructor',
+      instructorCtaText: 'Share your expertise with thousands of students, build your own curriculum, and earn from every course.',
+      instructorCtaButton: 'Apply now',
     },
     catalog: {
       resultsFor: 'Results for "{{query}}"', coursesCount: '{{count}} courses', title: 'Catalog',
@@ -426,6 +451,14 @@ export const translations = {
       sortPriceAsc: 'Price: low to high', sortPriceDesc: 'Price: high to low', sortRating: 'By rating',
       sortLessons: 'By number of lessons', nothingFound: 'Nothing found',
       tryDifferentFilters: 'Try changing your filters or search query.',
+      levelHeading: 'Level', priceHeading: 'Price', ratingHeading: 'Rating',
+    },
+    footer: {
+      tagline: 'The light of knowledge — in your language.',
+      platformHeading: 'Platform', catalogLink: 'Course catalog', aboutLink: 'About us', partnersLink: 'Partners',
+      studentsHeading: 'Students', howItWorksLink: 'How it works', certificatesLink: 'Certificates', supportLink: 'Support',
+      instructorsHeading: 'Instructors', becomeInstructorLink: 'Become an instructor', requirementsLink: 'Requirements', resourcesLink: 'Resources',
+      copyright: '© {{year}} NOOR. All rights reserved.',
     },
     course: {
       teacherLabel: 'Instructor: {{name}}', alreadyEnrolled: 'You are enrolled ✓',

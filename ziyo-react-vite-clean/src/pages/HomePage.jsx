@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import SeoHead from '../components/SeoHead.jsx';
+import Footer from '../components/Footer.jsx';
+import CategoryIcon from '../components/icons/CategoryIcon.jsx';
 import { categories } from '../data/courses.js';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
@@ -48,10 +50,8 @@ export default function HomePage() {
           </div>
         </div>
         <div className="hero-art" aria-hidden="true">
-          <div className="orbit orbit--one" /><div className="orbit orbit--two" />
-          <span className="hero-spark">✳</span>
-          <div className="learning-tile learning-tile--code"><span>01 / {translateCategory('Программирование')}</span><strong>&lt;/&gt;</strong><div className="code-lines"><i /><i /><i /></div></div>
-          <div className="learning-tile learning-tile--design"><span>02 / {translateCategory('Дизайн')}</span><div className="design-shapes"><i /><i /><i /><i /></div></div>
+          <div className="learning-tile learning-tile--code"><span>01 / {translateCategory('Программирование')}</span><CategoryIcon category="Программирование" size={40} /></div>
+          <div className="learning-tile learning-tile--design"><span>02 / {translateCategory('Дизайн')}</span><CategoryIcon category="Дизайн" size={40} /></div>
           <div className="learning-tile learning-tile--language"><span>03 / {translateCategory('Языки')}</span><strong>Салом<span> / Hello</span></strong></div>
           <span className="art-signature">NOOR — {t('home.badge')}</span>
         </div>
@@ -93,6 +93,16 @@ export default function HomePage() {
           <CourseGrid courses={activeCourses} showProgress enrollments={enrollments} limit={4} />
         </section>
       )}
+
+      <section className="instructor-cta">
+        <div>
+          <h2>{t('home.instructorCtaTitle')}</h2>
+          <p>{t('home.instructorCtaText')}</p>
+        </div>
+        <Link className="button button--primary" to="/teach">{t('home.instructorCtaButton')}</Link>
+      </section>
+
+      <Footer />
     </>
   );
 }

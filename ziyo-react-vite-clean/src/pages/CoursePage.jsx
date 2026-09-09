@@ -7,6 +7,7 @@ import StarRating from '../components/StarRating.jsx';
 import SeoHead from '../components/SeoHead.jsx';
 import { useApp } from '../store/appStore.js';
 import { useLanguage } from '../context/LanguageContext.jsx';
+import CategoryIcon, { getCategoryToneKey } from '../components/icons/CategoryIcon.jsx';
 import { getAverageRating, getCourseThumbnail, getEffectivePrice, getLessonCount, getLessons, getReviewCount, hasDiscount, isCourseDetailLoaded } from '../utils/courseHelpers.js';
 
 function ReviewForm({ courseId }) {
@@ -138,7 +139,10 @@ export default function CoursePage() {
       <SeoHead title={course.title} description={course.description} />
       <section className="course-hero">
         <div>
-          <span className="eyebrow">{translateCategory(course.category)} · {translateLevel(course.level)}</span>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <span className="eyebrow">{translateCategory(course.category)}</span>
+            <span className="eyebrow">{translateLevel(course.level)}</span>
+          </div>
           <h1>{course.title}</h1>
           <p>{course.description}</p>
           <div className="course-facts">
@@ -150,7 +154,8 @@ export default function CoursePage() {
           </div>
         </div>
         <aside className="purchase-card">
-          <div className={`purchase-card__preview preview--${course.tone}`} style={{ position: 'relative' }}>
+          <div className={`purchase-card__preview ${!cover ? `category-tile--${getCategoryToneKey(course.category)}` : ''}`} style={{ position: 'relative' }}>
+            {!cover && <CategoryIcon category={course.category} size={40} />}
             {cover && (
               <img
                 src={cover}
