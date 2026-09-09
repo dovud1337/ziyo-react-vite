@@ -201,9 +201,9 @@ button{cursor:pointer}
   font-weight:700}
 .main-content{min-width:0;
   width:100%;
-  max-width:1180px;
+  max-width:1320px;
   margin:0 auto;
-  padding:22px 24px 48px}
+  padding:22px 32px 48px}
 .compact-hero{display:grid;
   grid-template-columns:1.2fr .8fr;
   gap:24px;
@@ -494,8 +494,9 @@ input,select,textarea{border:1px solid var(--line);
   background:var(--surface);
   color:var(--text)}
 .people-grid,.feature-grid{display:grid;
-  grid-template-columns:repeat(4,1fr);
   gap:14px}
+.people-grid{grid-template-columns:repeat(4,1fr)}
+.feature-grid{grid-template-columns:repeat(3,1fr)}
 .person-card{text-align:center}
 .person-card__avatar{width:72px;
   height:72px;
