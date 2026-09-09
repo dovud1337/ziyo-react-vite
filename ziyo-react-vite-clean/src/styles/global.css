@@ -71,6 +71,7 @@
   --gold-tint: #3a2f1f;
   --gold-soft: var(--gold-tint)}
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 :focus-visible{outline:2px solid var(--green);outline-offset:2px}
 body{margin:0;
   background:var(--bg);
@@ -78,8 +79,12 @@ body{margin:0;
   transition:background-color .15s ease,color .15s ease;
   zoom:90%}
 a{color:inherit;
-  text-decoration:none}
+  text-decoration:none;
+  transition:color .15s ease}
 button,input,select,textarea{font:inherit}
+button{transition:background-color .15s ease,color .15s ease,border-color .15s ease,box-shadow .15s ease,transform .15s ease}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 button{cursor:pointer}
 .app-shell{min-height:100vh;
   display:grid;
@@ -142,6 +147,8 @@ button{cursor:pointer}
   place-items:center;
   font-size:16px;
   line-height:1}
+.theme-toggle:hover,.menu-button:hover{background:var(--line)}
+.theme-toggle:active,.menu-button:active{transform:scale(.92)}
 .menu-button{display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -160,7 +167,9 @@ button{cursor:pointer}
   border-radius:18px;
   padding:0 10px;
   font-size:13px;
-  font-weight:600}
+  font-weight:600;
+  transition:border-color .15s ease}
+.language-switcher:hover{border-color:var(--ink-faint)}
 .sidebar{position:fixed;
   top:72px;
   left:0;
@@ -178,7 +187,8 @@ button{cursor:pointer}
 .sidebar-overlay{position:fixed;
   inset:72px 0 0;
   background:rgba(32,34,48,.5);
-  z-index:25}
+  z-index:25;
+  animation:fadeIn .2s ease both}
 .sidebar__group{margin-bottom:18px;
   display:grid;
   gap:4px}
@@ -195,7 +205,8 @@ button{cursor:pointer}
   border:0;
   font-family:inherit;
   cursor:pointer;
-  color:inherit}
+  color:inherit;
+  transition:background-color .15s ease,color .15s ease}
 .sidebar__group a:hover,.sidebar__group a.active,.sidebar__group .sidebar__logout:hover{background:var(--accent-soft);
   color:var(--green);
   font-weight:700}
@@ -215,6 +226,8 @@ button{cursor:pointer}
   overflow:hidden}
 .compact-hero>*,.marketing-hero>*{position:relative;
   z-index:1}
+.compact-hero .hero-copy{animation:fadeInUp .5s ease both}
+.compact-hero .hero-art{animation:fadeInUp .5s ease .1s both}
 .compact-hero h1,.marketing-hero h1{font-family:var(--font-display);
   font-size:clamp(30px,3.5vw,48px);
   line-height:1.03;
@@ -256,7 +269,10 @@ button{cursor:pointer}
   flex-direction:column;
   justify-content:space-between;
   gap:18px;
-  min-height:150px}
+  min-height:150px;
+  transition:transform .2s ease,box-shadow .2s ease}
+.learning-tile:hover{transform:translateY(-4px);
+  box-shadow:var(--shadow-sm)}
 .learning-tile>span{font-size:11.5px;
   font-weight:600;
   color:var(--green);
@@ -294,14 +310,18 @@ button{cursor:pointer}
   align-items:center;
   gap:8px;
   justify-content:center;
-  transition:box-shadow .15s ease}
+  transition:box-shadow .15s ease,transform .1s ease,background-color .15s ease,border-color .15s ease}
 .button--primary{background:transparent;
   color:var(--green);
   border:1.5px solid var(--green)}
 .button--primary:hover{box-shadow:var(--shadow-sm)}
 .button--secondary{background:transparent;
   color:var(--text);
-  border:1px solid var(--line)}
+  border:1px solid var(--line);
+  transition:border-color .15s ease,background-color .15s ease}
+.button--secondary:hover{border-color:var(--ink-faint);
+  background:var(--surface-alt)}
+.button:active{transform:scale(.97)}
 .chips{display:flex;
   gap:8px;
   overflow-x:auto;
@@ -311,7 +331,10 @@ button{cursor:pointer}
   background:var(--surface);
   border-radius:999px;
   padding:8px 13px;
-  color:inherit}
+  color:inherit;
+  transition:border-color .15s ease,background-color .15s ease,color .15s ease,transform .15s ease}
+.chips button:hover,.chips a:hover{border-color:var(--ink-faint)}
+.chips button:active,.chips a:active{transform:scale(.96)}
 .chips button.active,.chips a.active{background:var(--green);
   color:#fff;
   border-color:var(--green)}
@@ -325,6 +348,15 @@ button{cursor:pointer}
 .course-grid{display:grid;
   grid-template-columns:repeat(4,minmax(0,1fr));
   gap:16px}
+.course-grid>*{animation:fadeInUp .4s ease both}
+.course-grid>*:nth-child(1){animation-delay:0s}
+.course-grid>*:nth-child(2){animation-delay:.04s}
+.course-grid>*:nth-child(3){animation-delay:.08s}
+.course-grid>*:nth-child(4){animation-delay:.12s}
+.course-grid>*:nth-child(5){animation-delay:.16s}
+.course-grid>*:nth-child(6){animation-delay:.2s}
+.course-grid>*:nth-child(7){animation-delay:.24s}
+.course-grid>*:nth-child(8){animation-delay:.28s}
 .course-card{min-width:0;
   background:var(--surface);
   border:1px solid var(--line);
@@ -359,7 +391,11 @@ button{cursor:pointer}
   cursor:pointer;
   display:grid;
   place-items:center;
-  background:rgba(255,255,255,.88)}
+  background:rgba(255,255,255,.88);
+  transition:transform .15s ease}
+.course-card__wishlist:hover{transform:scale(1.1)}
+.course-card__wishlist:active{transform:scale(.9)}
+.course-card__wishlist svg{transition:fill .15s ease,stroke .15s ease}
 .course-card__content{padding:12px}
 .course-card__content h3{margin:0 0 8px;
   font-size:15px;
@@ -766,4 +802,8 @@ input,select,textarea{border:1px solid var(--line);
 .site-footer__grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:520px){.site-footer__grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;
+  animation:none!important;
+  scroll-behavior:auto!important}
 }
