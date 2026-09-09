@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { sidebarGroups } from '../data/navigation.js';
 import { useApp } from '../store/appStore.js';
@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
 
-function Header({ onToggleMenu }) {
+function Header({ onToggleMenu, menuOpen }) {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
   const { user } = useApp((state) => ({ user: state.user }));
@@ -19,8 +19,8 @@ function Header({ onToggleMenu }) {
 
   return (
     <header className="header">
-      <button type="button" className="menu-button" aria-label="Меню" onClick={onToggleMenu}>☰</button>
-      <NavLink to="/" className="logo">ZIYO</NavLink>
+      <button type="button" className="menu-button" aria-label="Меню" aria-expanded={menuOpen} aria-controls="site-sidebar" onClick={onToggleMenu}>☰</button>
+      <NavLink to="/" className="logo"><span className="logo-mark" aria-hidden="true">✳</span>ZIYO<span className="logo-dot">.</span></NavLink>
       <nav className="header__nav">
         <NavLink to="/catalog">{t('nav.catalog')}</NavLink>
         <NavLink to="/instructors">{t('nav.instructors')}</NavLink>
@@ -29,6 +29,7 @@ function Header({ onToggleMenu }) {
       </nav>
       <form className="header__search" onSubmit={handleSearch}>
         <input
+          aria-label={t('nav.searchPlaceholder')}
           placeholder={t('nav.searchPlaceholder')}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -64,13 +65,13 @@ function Sidebar({ open, onClose }) {
   return (
     <>
       {open && <div className="sidebar-overlay" onClick={onClose} />}
-      <aside className={`sidebar${open ? ' sidebar--open' : ''}`}>
+      <aside id="site-sidebar" className={`sidebar${open ? ' sidebar--open' : ''}`}>
         {sidebarGroups.map((group) => (
           <div key={group.titleKey} className="sidebar__group">
             <span>{t(group.titleKey)}</span>
             {group.items.map(([to, labelKey]) => (
               <NavLink key={to} to={to} end={to === '/'} onClick={onClose}>
-                {t(labelKey)}
+                <span className="nav-symbol" aria-hidden="true">{({ '/': '⌂', '/catalog': '▦', '/student/courses': '▤', '/student/wishlist': '♡', '/student/calendar': '▦', '/student/messages': '✉', '/student/notifications': '♧', '/student/community': '◎', '/student/certificates': '☆', '/student/profile': '◉', '/student/settings': '⚙' })[to] ?? '◇'}</span>{t(labelKey)}
               </NavLink>
             ))}
           </div>
@@ -98,10 +99,16 @@ function Sidebar({ open, onClose }) {
 
 export default function MainLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event) => { if (event.key === 'Escape') setMenuOpen(false); };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [menuOpen]);
 
   return (
     <div className="app-shell">
-      <Header onToggleMenu={() => setMenuOpen((v) => !v)} />
+      <Header menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((v) => !v)} />
       <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
       <main className="main-content">
         <Outlet />

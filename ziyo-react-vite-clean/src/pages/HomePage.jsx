@@ -38,26 +38,34 @@ export default function HomePage() {
     <>
       <SeoHead />
       <section className="compact-hero">
-        <div>
+        <div className="hero-copy">
           <span className="eyebrow">{t('home.badge')}</span>
           <h1>{t('home.title')}</h1>
           <p>{t('home.subtitle')}</p>
           <div className="hero-actions">
-            <Link className="button button--primary" to="/catalog">{t('home.viewCourses')}</Link>
+            <Link className="button button--primary" to="/catalog">{t('home.viewCourses')} <span aria-hidden="true">↗</span></Link>
             <Link className="button button--secondary" to="/teach">{t('home.becomeInstructor')}</Link>
           </div>
         </div>
+        <div className="hero-art" aria-hidden="true">
+          <div className="orbit orbit--one" /><div className="orbit orbit--two" />
+          <span className="hero-spark">✳</span>
+          <div className="learning-tile learning-tile--code"><span>01 / {translateCategory('Программирование')}</span><strong>&lt;/&gt;</strong><div className="code-lines"><i /><i /><i /></div></div>
+          <div className="learning-tile learning-tile--design"><span>02 / {translateCategory('Дизайн')}</span><div className="design-shapes"><i /><i /><i /><i /></div></div>
+          <div className="learning-tile learning-tile--language"><span>03 / {translateCategory('Языки')}</span><strong>Салом<span> / Hello</span></strong></div>
+          <span className="art-signature">ZIYO — {t('home.badge')}</span>
+        </div>
+      </section>
         <div className="hero-metrics">
           <div><strong>{courses.length}</strong><span>{t('home.metricCourses')}</span></div>
           <div><strong>{teacherCount}</strong><span>{t('home.metricInstructors')}</span></div>
           <div><strong>{lessonCount}</strong><span>{t('home.metricLessons')}</span></div>
           <div><strong>{activeCourses.length}</strong><span>{t('home.metricYourCourses')}</span></div>
         </div>
-      </section>
 
       <div className="chips">
-        {categories.map((category) => (
-          <Link key={category} to={category === 'Все' ? '/catalog' : `/category/${encodeURIComponent(category)}`}>
+        {categories.map((category, index) => (
+          <Link className={index === 0 ? 'active' : ''} key={category} to={category === 'Все' ? '/catalog' : `/category/${encodeURIComponent(category)}`}>
             {translateCategory(category)}
           </Link>
         ))}
@@ -65,7 +73,7 @@ export default function HomePage() {
 
       <section className="section">
         <div className="section__header">
-          <h2>{t('home.nowOnPlatform')}</h2>
+          <div><span className="eyebrow">ZIYO / {t('nav.catalog')}</span><h2>{t('home.nowOnPlatform')}</h2></div>
           <Link to="/catalog">{t('home.openCatalog')}</Link>
         </div>
         {courses.length > 0 ? (

@@ -26,6 +26,7 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
   return (
     <Link to={`/courses/${course.id}`} className="course-card">
       <div className={`course-card__preview preview--${course.tone}`}>
+        {!cover && <div className="course-card__art" aria-hidden="true"><span>{({ 'Программирование': '</>', 'Дизайн': 'Aa', 'Языки': 'Aa', 'AI': '✳', 'Аналитика': '▥' })[course.category] ?? '↗'}</span><i /></div>}
         {cover && (
           <img
             src={cover}
