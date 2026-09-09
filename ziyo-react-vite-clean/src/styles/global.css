@@ -228,6 +228,42 @@ button{cursor:pointer}
   z-index:1}
 .compact-hero .hero-copy{animation:fadeInUp .5s ease both}
 .compact-hero .hero-art{animation:fadeInUp .5s ease .1s both}
+.hero-glow{position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  transform:translate(calc(var(--mx,0) * 14px),calc(var(--my,0) * 14px));
+  transition:transform .3s ease}
+.hero-glow__blob{position:absolute;
+  border-radius:50%;
+  filter:blur(60px);
+  opacity:.4;
+  animation:blobDrift 15s ease-in-out infinite}
+.hero-glow__blob--violet{width:280px;
+  height:280px;
+  background:var(--green);
+  top:-70px;
+  right:8%;
+  animation-duration:16s}
+.hero-glow__blob--ember{width:220px;
+  height:220px;
+  background:var(--gold);
+  bottom:-50px;
+  left:6%;
+  animation-duration:13s;
+  animation-delay:-4s}
+.hero-glow__blob--soft{width:200px;
+  height:200px;
+  background:var(--forest-tint);
+  top:35%;
+  left:42%;
+  animation-duration:19s;
+  animation-delay:-8s;
+  opacity:.6}
+@keyframes blobDrift{0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(24px,-18px) scale(1.08)}
+  66%{transform:translate(-18px,16px) scale(.94)}
+}
 .compact-hero h1,.marketing-hero h1{font-family:var(--font-display);
   font-size:clamp(30px,3.5vw,48px);
   line-height:1.03;

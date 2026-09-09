@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import CourseGrid from '../components/CourseGrid.jsx';
 import SeoHead from '../components/SeoHead.jsx';
@@ -17,6 +18,23 @@ export default function HomePage() {
     refreshCourses: state.refreshCourses,
   }));
   const { t, translateCategory } = useLanguage();
+  const glowRef = useRef(null);
+  const reduceMotionRef = useRef(typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+
+  const handleHeroMouseMove = (event) => {
+    if (reduceMotionRef.current || !glowRef.current) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const mx = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    const my = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    glowRef.current.style.setProperty('--mx', mx.toFixed(3));
+    glowRef.current.style.setProperty('--my', my.toFixed(3));
+  };
+
+  const handleHeroMouseLeave = () => {
+    if (!glowRef.current) return;
+    glowRef.current.style.setProperty('--mx', 0);
+    glowRef.current.style.setProperty('--my', 0);
+  };
   const enrolledIds = Object.keys(enrollments).map(Number);
   const activeCourses = courses.filter((course) => enrolledIds.includes(course.id));
   const teacherCount = new Set(courses.map((course) => course.teacher)).size;
@@ -39,7 +57,12 @@ export default function HomePage() {
   return (
     <>
       <SeoHead />
-      <section className="compact-hero">
+      <section className="compact-hero" onMouseMove={handleHeroMouseMove} onMouseLeave={handleHeroMouseLeave}>
+        <div className="hero-glow" ref={glowRef} aria-hidden="true">
+          <span className="hero-glow__blob hero-glow__blob--violet" />
+          <span className="hero-glow__blob hero-glow__blob--ember" />
+          <span className="hero-glow__blob hero-glow__blob--soft" />
+        </div>
         <div className="hero-copy">
           <span className="eyebrow">{t('home.badge')}</span>
           <h1>{t('home.title')}</h1>
