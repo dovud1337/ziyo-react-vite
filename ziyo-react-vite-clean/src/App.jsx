@@ -39,7 +39,7 @@ export default function App() {
 
   if (!supabase) return (
     <main className="auth-page"><div className="auth-card panel" role="alert">
-      <h1>ZIYO</h1><h2>{t('common.setupTitle')}</h2><p>{t('common.setupDescription')}</p>
+      <h1>NOOR</h1><h2>{t('common.setupTitle')}</h2><p>{t('common.setupDescription')}</p>
     </div></main>
   );
 

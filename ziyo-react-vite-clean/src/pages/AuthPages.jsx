@@ -59,7 +59,7 @@ export default function AuthPage({ mode }) {
       <SeoHead title={content[0]} />
       <div className="auth-page__theme"><LanguageSwitcher /><ThemeToggle /></div>
       <form className="auth-card panel" onSubmit={handleSubmit}>
-        <Link to="/" className="logo">ZIYO</Link>
+        <Link to="/" className="logo">NOOR</Link>
         <h1>{content[0]}</h1>
         {mode === 'forgot' && sent ? (
           <p>{t('auth.resetInstructionsSent', { email })}</p>

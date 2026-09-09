@@ -20,7 +20,7 @@ function Header({ onToggleMenu, menuOpen }) {
   return (
     <header className="header">
       <button type="button" className="menu-button" aria-label="Меню" aria-expanded={menuOpen} aria-controls="site-sidebar" onClick={onToggleMenu}>☰</button>
-      <NavLink to="/" className="logo"><span className="logo-mark" aria-hidden="true">✳</span>ZIYO<span className="logo-dot">.</span></NavLink>
+      <NavLink to="/" className="logo"><span className="logo-mark" aria-hidden="true">✳</span>NOOR<span className="logo-dot">.</span></NavLink>
       <nav className="header__nav">
         <NavLink to="/catalog">{t('nav.catalog')}</NavLink>
         <NavLink to="/instructors">{t('nav.instructors')}</NavLink>

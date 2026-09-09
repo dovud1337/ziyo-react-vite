@@ -53,7 +53,7 @@ export default function HomePage() {
           <div className="learning-tile learning-tile--code"><span>01 / {translateCategory('Программирование')}</span><strong>&lt;/&gt;</strong><div className="code-lines"><i /><i /><i /></div></div>
           <div className="learning-tile learning-tile--design"><span>02 / {translateCategory('Дизайн')}</span><div className="design-shapes"><i /><i /><i /><i /></div></div>
           <div className="learning-tile learning-tile--language"><span>03 / {translateCategory('Языки')}</span><strong>Салом<span> / Hello</span></strong></div>
-          <span className="art-signature">ZIYO — {t('home.badge')}</span>
+          <span className="art-signature">NOOR — {t('home.badge')}</span>
         </div>
       </section>
         <div className="hero-metrics">
@@ -73,7 +73,7 @@ export default function HomePage() {
 
       <section className="section">
         <div className="section__header">
-          <div><span className="eyebrow">ZIYO / {t('nav.catalog')}</span><h2>{t('home.nowOnPlatform')}</h2></div>
+          <div><span className="eyebrow">NOOR / {t('nav.catalog')}</span><h2>{t('home.nowOnPlatform')}</h2></div>
           <Link to="/catalog">{t('home.openCatalog')}</Link>
         </div>
         {courses.length > 0 ? (

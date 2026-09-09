@@ -1,4 +1,4 @@
--- ZIYO backend schema
+-- NOOR backend schema
 -- Run this once in the Supabase SQL editor (Project -> SQL Editor -> New query).
 -- Safe to re-run: uses IF NOT EXISTS / DROP POLICY IF EXISTS where sensible.
 

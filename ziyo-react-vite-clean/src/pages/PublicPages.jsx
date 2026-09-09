@@ -103,7 +103,7 @@ export function MarketingPage({ title, description, cta, ctaTo = '/register' }) 
   return (
     <>
       <SeoHead title={title} description={description} />
-      <section className="marketing-hero panel"><span className="eyebrow">{t('publicPages.ziyoEyebrow')}</span><h1>{title}</h1><p>{description}</p><Button onClick={() => navigate(ctaTo)}>{cta ?? t('publicPages.defaultCta')}</Button></section>
+      <section className="marketing-hero panel"><span className="eyebrow">{t('publicPages.brandEyebrow')}</span><h1>{title}</h1><p>{description}</p><Button onClick={() => navigate(ctaTo)}>{cta ?? t('publicPages.defaultCta')}</Button></section>
       <section className="section"><div className="feature-grid">{features.map((item) => <div className="panel" key={item}><h3>{item}</h3><p>{t('publicPages.featureCardDescription')}</p></div>)}</div></section>
     </>
   );

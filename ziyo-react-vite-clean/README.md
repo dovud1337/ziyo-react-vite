@@ -1,6 +1,6 @@
-# ZIYO — React + Vite
+# NOOR — React + Vite
 
-ZIYO is a mock **online course marketplace** (like a tiny Udemy) — students browse courses, buy them, take lessons, leave reviews. It's built with plain, familiar tools:
+NOOR is a mock **online course marketplace** (like a tiny Udemy) — students browse courses, buy them, take lessons, leave reviews. It's built with plain, familiar tools:
 
 - React
 - JavaScript (no TypeScript)
