@@ -190,7 +190,7 @@ export function CreateCoursePage() {
     <>
       <PageHeader eyebrow={t('instructor.studioEyebrow')} title={t('instructor.createCourseTitle')} description={t('instructor.createCourseDescription')} />
       <form className="panel form" onSubmit={handleSubmit}>
-        {error && <p style={{ color: '#c0392b' }}>{error}</p>}
+        {error && <p className="error-message">{error}</p>}
         <label>{t('instructor.courseNameLabel')}<input required placeholder={t('instructor.courseNamePlaceholder')} value={title} onChange={(event) => setTitle(event.target.value)} /></label>
         <label>{t('instructor.categoryLabel')}<select value={category} onChange={(event) => setCategory(event.target.value)}>{categories.filter((c) => c !== 'Все').map((c) => <option key={c} value={c}>{translateCategory(c)}</option>)}</select></label>
         <label>{t('instructor.levelLabel')}<select value={level} onChange={(event) => setLevel(event.target.value)}>{levels.map((l) => <option key={l} value={l}>{translateLevel(l)}</option>)}</select></label>
@@ -247,7 +247,7 @@ export function CreateCoursePage() {
                         {videoUploads[lesson.id] && !videoUploads[lesson.id].uploading && !videoUploads[lesson.id].error && lesson.videoUrl && (
                           <span>Готово</span>
                         )}
-                        {videoUploads[lesson.id]?.error && <span style={{ color: '#c0392b' }}>{videoUploads[lesson.id].error}</span>}
+                        {videoUploads[lesson.id]?.error && <span className="error-message">{videoUploads[lesson.id].error}</span>}
                         {videoUploads[lesson.id]?.previewUrl && (
                           <video
                             src={videoUploads[lesson.id].previewUrl}

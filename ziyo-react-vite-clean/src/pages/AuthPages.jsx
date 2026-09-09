@@ -72,7 +72,7 @@ export default function AuthPage({ mode }) {
             {mode !== 'forgot' && (
               <label>{t('auth.password')}<input required type="password" minLength={mode === 'login' ? undefined : 6} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
             )}
-            {error && <p style={{ color: '#c0392b' }}>{error}</p>}
+            {error && <p className="error-message">{error}</p>}
             <Button type="submit" disabled={submitting}>{submitting ? t('auth.pleaseWait') : t('auth.continueBtn')}</Button>
           </>
         )}

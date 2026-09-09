@@ -128,7 +128,7 @@ export function CheckoutPage() {
             <Button type="button" variant="secondary" onClick={handleApplyCoupon}>{t('checkout.apply')}</Button>
           </div>
         </label>
-        {couponError && <p style={{ color: '#c0392b' }}>{couponError}</p>}
+        {couponError && <p className="error-message">{couponError}</p>}
         {appliedCoupon && <p style={{ color: 'var(--green)' }}>{t('checkout.couponApplied', { code: appliedCoupon, percent: discountPercent })}</p>}
         <p>{t('checkout.amount', { amount: subtotal })}</p>
         {discountAmount > 0 && <p>{t('checkout.discount', { amount: discountAmount })}</p>}
@@ -139,7 +139,7 @@ export function CheckoutPage() {
         <label>{t('checkout.nameOnCard')}<input required value={form.name} onChange={handleChange('name')} placeholder="Довуд Каримов" /></label>
         <label>{t('checkout.cardNumber')}<input required value={form.card} onChange={handleChange('card')} placeholder="0000 0000 0000 0000" /></label>
         <label>{t('checkout.expiry')}<input required value={form.expiry} onChange={handleChange('expiry')} placeholder={t('checkout.expiryPlaceholder')} /></label>
-        {submitError && <p style={{ color: '#c0392b' }}>{submitError}</p>}
+        {submitError && <p className="error-message">{submitError}</p>}
         <Button type="submit" disabled={submitting}>{submitting ? t('checkout.paying') : t('checkout.pay', { total })}</Button>
       </form>
     </>
