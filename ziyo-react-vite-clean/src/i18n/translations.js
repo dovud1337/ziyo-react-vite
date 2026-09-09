@@ -57,7 +57,7 @@ export const translations = {
     },
     home: {
       badge: 'Центральная Азия · СНГ', title: 'Учитесь у своих. Работайте где угодно.',
-      subtitle: 'Практические курсы на русском и локальных языках.', viewCourses: 'Смотреть курсы',
+      subtitle: 'Практические курсы на локальных языках.', viewCourses: 'Смотреть курсы',
       becomeInstructor: 'Стать преподавателем', metricCourses: 'курсов', metricInstructors: 'преподавателей',
       metricLessons: 'уроков', metricYourCourses: 'ваших курсов', nowOnPlatform: 'Сейчас на платформе',
       openCatalog: 'Открыть каталог →', noCourses: 'Курсов пока нет',
@@ -245,8 +245,8 @@ export const translations = {
       lightTheme: 'Мавзӯи равшан', darkTheme: 'Мавзӯи торик',
     },
     home: {
-      badge: 'Осиёи Марказӣ · ИДМ', title: 'Дониш аз ҳамватанон. Кор дар ҳама ҷо.',
-      subtitle: 'Курсҳои амалӣ бо забони русӣ ва забонҳои маҳаллӣ.', viewCourses: 'Курсҳоро дидан',
+      badge: 'Осиёи Марказӣ · ИДМ', title: 'Малака биомӯз, оянда бисоз.',
+      subtitle: 'Курсҳои амалӣ бо забонҳои маҳаллӣ.', viewCourses: 'Курсҳоро дидан',
       becomeInstructor: 'Омӯзгор шудан', metricCourses: 'курс', metricInstructors: 'омӯзгор',
       metricLessons: 'дарс', metricYourCourses: 'курсҳои шумо', nowOnPlatform: 'Ҳоло дар платформа',
       openCatalog: 'Каталогро кушодан →', noCourses: 'Ҳанӯз курсе нест',
@@ -435,7 +435,7 @@ export const translations = {
     },
     home: {
       badge: 'Central Asia · CIS', title: 'Learn from your own. Work anywhere.',
-      subtitle: 'Practical courses in Russian and local languages.', viewCourses: 'Browse courses',
+      subtitle: 'Practical courses in local languages.', viewCourses: 'Browse courses',
       becomeInstructor: 'Become an instructor', metricCourses: 'courses', metricInstructors: 'instructors',
       metricLessons: 'lessons', metricYourCourses: 'your courses', nowOnPlatform: 'Now on the platform',
       openCatalog: 'Open catalog →', noCourses: 'No courses yet',
