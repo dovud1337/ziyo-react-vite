@@ -79,12 +79,12 @@ export default function HomePage() {
           <span className="art-signature">NOOR — {t('home.badge')}</span>
         </div>
       </section>
-        <div className="hero-metrics">
-          <div><strong>{courses.length}</strong><span>{t('home.metricCourses')}</span></div>
-          <div><strong>{teacherCount}</strong><span>{t('home.metricInstructors')}</span></div>
-          <div><strong>{lessonCount}</strong><span>{t('home.metricLessons')}</span></div>
-          <div><strong>{activeCourses.length}</strong><span>{t('home.metricYourCourses')}</span></div>
-        </div>
+      <div className="hero-metrics">
+        <div><strong>{courses.length}</strong><span>{t('home.metricCourses')}</span></div>
+        <div><strong>{teacherCount}</strong><span>{t('home.metricInstructors')}</span></div>
+        <div><strong>{lessonCount}</strong><span>{t('home.metricLessons')}</span></div>
+        <div><strong>{activeCourses.length}</strong><span>{t('home.metricYourCourses')}</span></div>
+      </div>
 
       <div className="chips">
         {categories.map((category, index) => (

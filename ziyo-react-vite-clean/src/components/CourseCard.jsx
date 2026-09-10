@@ -21,7 +21,7 @@ export default function CourseCard({ course, showProgress = false, progress = 0 
   const handleWishlistClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    toggleWishlist(course.id);
+    toggleWishlist(course.id).catch(() => {});
   };
 
   return (

@@ -186,7 +186,10 @@ export const useAppStore = create((set, get) => ({
     supabase.auth.getSession().then(({ data }) => {
       if (version === 0) syncSession(data.session);
     }).catch(() => set({ userDataLoaded: true }));
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      // login()/logout() already call applySession directly; skip re-running it here
+      // to avoid a duplicate, uncoordinated data load racing the one they awaited.
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') return;
       // Run database requests after the auth callback releases its lock.
       setTimeout(() => syncSession(session), 0);
     });

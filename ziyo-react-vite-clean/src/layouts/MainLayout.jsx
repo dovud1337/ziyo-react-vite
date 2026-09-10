@@ -56,10 +56,14 @@ function Sidebar({ open, onClose }) {
   const { user, logout } = useApp((state) => ({ user: state.user, logout: state.logout }));
   const { t } = useLanguage();
 
-  const handleLogout = () => {
-    logout();
-    onClose();
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      onClose();
+      navigate('/');
+    } catch {
+      onClose();
+    }
   };
 
   return (
@@ -71,7 +75,7 @@ function Sidebar({ open, onClose }) {
             <span>{t(group.titleKey)}</span>
             {group.items.map(([to, labelKey]) => (
               <NavLink key={to} to={to} end={to === '/'} onClick={onClose}>
-                <span className="nav-symbol" aria-hidden="true">{({ '/': '⌂', '/catalog': '▦', '/student/courses': '▤', '/student/wishlist': '♡', '/student/calendar': '▦', '/student/messages': '✉', '/student/notifications': '♧', '/student/community': '◎', '/student/certificates': '☆', '/student/profile': '◉', '/student/settings': '⚙' })[to] ?? '◇'}</span>{t(labelKey)}
+                <span className="nav-symbol" aria-hidden="true">{({ '/': '⌂', '/catalog': '▦', '/instructors': '◈', '/business': '◫', '/teach': '✎', '/student/courses': '▤', '/student/wishlist': '♡', '/student/calendar': '▦', '/student/messages': '✉', '/student/notifications': '♧', '/student/community': '◎', '/student/certificates': '☆', '/student/profile': '◉', '/student/settings': '⚙' })[to] ?? '◇'}</span>{t(labelKey)}
               </NavLink>
             ))}
           </div>
