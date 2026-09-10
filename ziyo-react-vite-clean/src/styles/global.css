@@ -91,12 +91,14 @@ button{cursor:pointer}
   z-index:0;
   overflow:hidden;
   pointer-events:none}
+.bg-glow__inner{position:absolute;
+  inset:0;
+  transform:translate(calc(var(--page-mx,0) * 1px),calc(var(--page-my,0) * 1px));
+  transition:transform .5s ease-out}
 .bg-glow__blob{position:absolute;
   border-radius:50%;
   filter:blur(90px);
   opacity:.28;
-  transform:translate(calc(var(--page-mx,0) * 1px),calc(var(--page-my,0) * 1px));
-  transition:transform .5s ease-out;
   animation:blobDrift 24s ease-in-out infinite}
 .bg-glow__blob--a{width:480px;
   height:480px;

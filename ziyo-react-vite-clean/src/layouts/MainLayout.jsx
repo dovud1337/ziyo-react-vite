@@ -119,8 +119,8 @@ export default function MainLayout() {
       frame = null;
       const mx = (latestEvent.clientX / window.innerWidth - 0.5) * 2;
       const my = (latestEvent.clientY / window.innerHeight - 0.5) * 2;
-      root.style.setProperty('--page-mx', (mx * 40).toFixed(1));
-      root.style.setProperty('--page-my', (my * 40).toFixed(1));
+      root.style.setProperty('--page-mx', (mx * 70).toFixed(1));
+      root.style.setProperty('--page-my', (my * 70).toFixed(1));
     };
     const handleMouseMove = (event) => {
       latestEvent = event;
@@ -136,9 +136,11 @@ export default function MainLayout() {
   return (
     <>
       <div className="bg-glow" aria-hidden="true">
-        <span className="bg-glow__blob bg-glow__blob--a" />
-        <span className="bg-glow__blob bg-glow__blob--b" />
-        <span className="bg-glow__blob bg-glow__blob--c" />
+        <div className="bg-glow__inner">
+          <span className="bg-glow__blob bg-glow__blob--a" />
+          <span className="bg-glow__blob bg-glow__blob--b" />
+          <span className="bg-glow__blob bg-glow__blob--c" />
+        </div>
       </div>
       <div className="app-shell">
         <Header menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((v) => !v)} />
