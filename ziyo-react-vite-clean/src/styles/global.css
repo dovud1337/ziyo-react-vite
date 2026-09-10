@@ -86,7 +86,42 @@ button{transition:background-color .15s ease,color .15s ease,border-color .15s e
 @keyframes fadeInUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 button{cursor:pointer}
+.bg-glow{position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none}
+.bg-glow__blob{position:absolute;
+  border-radius:50%;
+  filter:blur(90px);
+  opacity:.28;
+  transform:translate(calc(var(--page-mx,0) * 1px),calc(var(--page-my,0) * 1px));
+  transition:transform .5s ease-out;
+  animation:blobDrift 24s ease-in-out infinite}
+.bg-glow__blob--a{width:480px;
+  height:480px;
+  background:var(--green);
+  top:6%;
+  left:4%;
+  animation-duration:26s}
+.bg-glow__blob--b{width:420px;
+  height:420px;
+  background:var(--gold);
+  bottom:8%;
+  right:6%;
+  animation-duration:21s;
+  animation-delay:-7s}
+.bg-glow__blob--c{width:380px;
+  height:380px;
+  background:var(--forest-tint);
+  top:42%;
+  left:52%;
+  animation-duration:29s;
+  animation-delay:-13s;
+  opacity:.32}
 .app-shell{min-height:100vh;
+  position:relative;
+  z-index:1;
   display:grid;
   grid-template-columns:1fr;
   grid-template-rows:72px 1fr}

@@ -110,13 +110,43 @@ export default function MainLayout() {
     return () => document.removeEventListener('keydown', closeOnEscape);
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const root = document.documentElement;
+    let frame = null;
+    let latestEvent = null;
+    const applyMove = () => {
+      frame = null;
+      const mx = (latestEvent.clientX / window.innerWidth - 0.5) * 2;
+      const my = (latestEvent.clientY / window.innerHeight - 0.5) * 2;
+      root.style.setProperty('--page-mx', (mx * 40).toFixed(1));
+      root.style.setProperty('--page-my', (my * 40).toFixed(1));
+    };
+    const handleMouseMove = (event) => {
+      latestEvent = event;
+      if (frame === null) frame = requestAnimationFrame(applyMove);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
-    <div className="app-shell">
-      <Header menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((v) => !v)} />
-      <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
-      <main className="main-content">
-        <Outlet />
-      </main>
-    </div>
+    <>
+      <div className="bg-glow" aria-hidden="true">
+        <span className="bg-glow__blob bg-glow__blob--a" />
+        <span className="bg-glow__blob bg-glow__blob--b" />
+        <span className="bg-glow__blob bg-glow__blob--c" />
+      </div>
+      <div className="app-shell">
+        <Header menuOpen={menuOpen} onToggleMenu={() => setMenuOpen((v) => !v)} />
+        <Sidebar open={menuOpen} onClose={() => setMenuOpen(false)} />
+        <main className="main-content">
+          <Outlet />
+        </main>
+      </div>
+    </>
   );
 }
