@@ -4,6 +4,9 @@ export const sidebarGroups = [
     items: [
       ['/', 'sidebar.home'],
       ['/catalog', 'sidebar.catalog'],
+      ['/instructors', 'nav.instructors'],
+      ['/business', 'nav.business'],
+      ['/teach', 'nav.teach'],
       ['/student/courses', 'sidebar.myCourses'],
       ['/student/wishlist', 'sidebar.wishlist'],
       ['/student/calendar', 'sidebar.calendar'],
